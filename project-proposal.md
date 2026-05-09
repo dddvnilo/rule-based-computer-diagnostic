@@ -66,7 +66,6 @@ Na osnovu ulaznih podataka, sistem generiše:
 - **Tip kvara** (pregrevanje, fizički kvar, softverski konflikt, nestabilno napajanje, degradacija, driver problem itd.).
 - **Nivo ozbiljnosti:** KRITIČNO / UPOZORENJE / INFO.
 - **Objašnjenje zaključka** - koji simptomi i podaci su doveli do dijagnoze.
-- **Konkretnu preporuku za akciju:** zamena komponente, čišćenje sistema, reinstalacija drajvera, formatiranje.
 
 ### 3.3 Baza znanja
 
@@ -78,13 +77,13 @@ Svaka od 9 komponenti modelovana je kao templejt koji sadrži relevantne atribut
 
 | Komponenta | Ključni atributi | Mogući kvarovi |
 |---|---|---|
-| **CPU** | temperatura, utilization %, socket tip, TDP | pregrevanje, degradacija, fizički kvar |
-| **GPU** | temperatura, VRAM zauzetost | pregrevanje, VRAM kvar, driver konflikt |
+| **CPU** | temperatura, utilization %, socket tip, TDP | pregrevanje, fizički kvar |
+| **GPU** | temperatura, VRAM zauzetost, fan speed (RPM) | pregrevanje, VRAM kvar, driver konflikt |
 | **RAM** | kapacitet, frekvencija, zauzetost %, memtest greške | fizički kvar ćelija, nekompatibilnost |
 | **Disk** | SMART parametri, temperatura, power-on hours | fizički kvar, loši sektori, istrošenost |
-| **PSU** | napon po linijama (+12V, +5V, +3.3V), wattage | nestabilan napon, nedovoljan wattage, kvar |
+| **PSU** | napon po linijama (+12V, +5V, +3.3V), wattage | nestabilan napon, nedovoljan wattage |
 | **Motherboard** | temperatura chipseta, POST kodovi, VRM status | loši kondenzatori, VRM kvar, BIOS problem |
-| **Cooling system** | RPM po ventilatorima, broj ventilatora, case temperatura | ležaj se troši, ventilator stao, loš airflow |
+| **Cooling system** | RPM po ventilatorima, broj ventilatora, case temperatura | istrošen ležaj, ventilator stao, loš airflow |
 | **Network** | packet loss %, ping, brzina konekcije | driver konflikt, fizički kvar čipa |
 | **OS/Softver** | uptime, event log greške, driver verzije | malware, zastareli drajveri, corrupt fajlovi |
 
@@ -177,8 +176,8 @@ CEP-1: AKO temperatura_CPU > 90°C se pojavi 3+ puta u roku od 10 minuta
 CEP-2: AKO SMART greška na disku zabeležena 5+ puta u toku jednog dana
        ONDA alarm = "Disk pokazuje znakove skorog otkaza"
 
-CEP-3: AKO računar_restart se desi 3+ puta u toku jednog sata
-       ONDA alarm = "Kritična nestabilnost sistema"
+CEP-3: AKO ping > 5x baseline vrednosti u 3+ merenja tokom 5 minuta
+       ONDA alarm = "Nestabilan network adapter - detektovane nagle oscilacije latencije"
 
 CEP-4: AKO napon_12V oscilira (gore-dole) u 5 uzastopnih merenja
        ONDA alarm = "Nestabilno napajanje - rizik od oštećenja komponenti"
