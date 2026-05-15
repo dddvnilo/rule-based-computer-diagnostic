@@ -187,30 +187,6 @@ CEP-5: AKO temperatura_GPU raste linearno za 10°C+ tokom 15 minuta
        ONDA alarm = "Moguć začepljen ventilator ili istrošena termalna pasta GPU"
 ```
 
-
-### 3.6 Backward Chaining - provera hipoteza
-
-Backward chaining se koristi kada korisnik želi da proveri konkretnu hipotezu o uzroku kvara. Korisnik unosi pretpostavku (npr. "GPU je problem"), a sistem na osnovu već unetih podataka i simptoma unazad proverava sve uslove koji bi tu hipotezu potvrdili ili oborili.
-
-**Hipoteza 1: "Problem je u napajanju (PSU)"**
-
-Sistem traži dokaze za: nestabilan napon na +12V liniji, restartovi pri većem opterećenju, više komponenti koje ne rade ispravno istovremeno, nedovoljan wattage za instalirane komponente.
-
-Ako dokazi nisu prisutni -> hipoteza se odbacuje sa objašnjenjem.
-
-**Hipoteza 2: "Problem je softverski, a ne hardverski"**
-
-Sistem traži dokaze za: simptomi se javljaju samo u određenom programu, temperatura i SMART vrednosti su normalne, event log pokazuje greške specifične za softver.
-
-**Hipoteza 3: "RAM je uzrok BSOD-ova"**
-
-Sistem traži dokaze za: BSOD error kodovi specifični za RAM (MEMORY_MANAGEMENT, PAGE_FAULT_IN_NONPAGED_AREA), greške u memtest alatu, nasumični crashevi bez pregrevanja ili disk grešaka.
-
-**Hipoteza 4: "Motherboard je uzrok problema"**
-
-Sistem traži dokaze za: POST greške pri pokretanju, nestabilnost koja se ne može pripisati jednoj komponenti, VRM temperatura van normalnog opsega.
-
-
 ## 4. Konkretan primer rezonovanja
 
 **Scenario:** Korisnik prijavljuje da mu računar često restartuje i da je bučan.
@@ -271,14 +247,3 @@ R6: tip_kvara = KVAR_VENTILATORA
 - **KRITIČNO** - Sistem hlađenja (Cooling system)
 - Tip kvara: Kvar ventilatora
 - Preporuka: Hitna fizička intervencija - čišćenje i/ili zamena ventilatora
-
-### Korak 7 - Backward chaining (opciona provera)
-
-Korisnik unosi hipotezu: *"Mislim da mi je problem u napajanju."*
-
-Sistem proverava uslove na osnovu već unetih podataka:
-- Da li napon +12V oscilira? -> **NE** (stabilan)
-- Da li više komponenti istovremeno pokazuje greške? -> **NE** (samo Cooling system)
-- Da li se restartovi dešavaju i pri malom opterećenju? -> **DA** - ali ostali PSU indikatori su uredni
-
-**Zaključak backward chaininga:** Hipoteza o kvaru napajanja se **odbacuje**. Problem je potvrđen kao kvar sistema hlađenja CPU-a.
