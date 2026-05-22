@@ -1,0 +1,46 @@
+package com.ftn.sbnz.kjar;
+
+import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.KomponentaFakt;
+import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
+
+// Pravilo 1: Visoka temperatura CPU -> sumnja na CPU i Cooling
+rule "Nivo1 - Visoka temperatura CPU"
+    when
+        $s : SimptomFakt(temperaturaCPU > 90)
+        not KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+    then
+        insert(new KomponentaFakt(TipKomponente.COOLING));
+        insert(new KomponentaFakt(TipKomponente.CPU));
+        System.out.println("Nivo 1: Visoka temperatura CPU - sumnja na COOLING i CPU");
+end
+
+// Pravilo 2: Artefakti na ekranu -> sumnja na GPU
+rule "Nivo1 - Artefakti na ekranu"
+    when
+        $s : SimptomFakt(artefaktiNaEkranu == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.GPU)
+    then
+        insert(new KomponentaFakt(TipKomponente.GPU));
+        System.out.println("Nivo 1: Artefakti na ekranu - sumnja na GPU");
+end
+
+// Pravilo 3: BSOD MEMORY_MANAGEMENT -> sumnja na RAM
+rule "Nivo1 - BSOD Memory Management"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "MEMORY_MANAGEMENT")
+        not KomponentaFakt(tipKomponente == TipKomponente.RAM)
+    then
+        insert(new KomponentaFakt(TipKomponente.RAM));
+        System.out.println("Nivo 1: BSOD MEMORY_MANAGEMENT - sumnja na RAM");
+end
+
+// Pravilo 4: Visok packet loss -> sumnja na Network
+rule "Nivo1 - Visok packet loss"
+    when
+        $s : SimptomFakt(packetLoss > 10)
+        not KomponentaFakt(tipKomponente == TipKomponente.NETWORK)
+    then
+        insert(new KomponentaFakt(TipKomponente.NETWORK));
+        System.out.println("Nivo 1: Visok packet loss - sumnja na NETWORK");
+end

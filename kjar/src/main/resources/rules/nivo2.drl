@@ -1,0 +1,51 @@
+package com.ftn.sbnz.kjar;
+
+import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.KomponentaFakt;
+import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
+import com.ftn.sbnz.model.KvarFakt;
+import com.ftn.sbnz.model.KvarFakt.TipKvara;
+
+// Pravilo 5: Cooling + nizak RPM -> kvar ventilatora
+rule "Nivo2 - Kvar ventilatora"
+    when
+        KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+        $s : SimptomFakt(rpmVentilator < 500)
+        not KvarFakt(tipKvara == TipKvara.KVAR_VENTILATORA)
+    then
+        insert(new KvarFakt(TipKvara.KVAR_VENTILATORA, TipKomponente.COOLING));
+        System.out.println("Nivo 2: RPM nizak - tip kvara KVAR_VENTILATORA");
+end
+
+// Pravilo 6: Cooling + RPM ok ali temp visoka -> istrosena termalna pasta
+rule "Nivo2 - Istrosena termalna pasta"
+    when
+        KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+        $s : SimptomFakt(rpmVentilator >= 500, temperaturaCPU > 90)
+        not KvarFakt(tipKvara == TipKvara.ISTROSENA_TERMALNA_PASTA)
+    then
+        insert(new KvarFakt(TipKvara.ISTROSENA_TERMALNA_PASTA, TipKomponente.COOLING));
+        System.out.println("Nivo 2: RPM ok ali temp visoka - tip kvara ISTROSENA_TERMALNA_PASTA");
+end
+
+// Pravilo 7: GPU + visoka temperatura -> pregrevanje GPU
+rule "Nivo2 - Pregrevanje GPU"
+    when
+        KomponentaFakt(tipKomponente == TipKomponente.GPU)
+        $s : SimptomFakt(temperaturaGPU > 95)
+        not KvarFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
+    then
+        insert(new KvarFakt(TipKvara.PREGREVANJE_GPU, TipKomponente.GPU));
+        System.out.println("Nivo 2: Temperatura GPU visoka - tip kvara PREGREVANJE_GPU");
+end
+
+// Pravilo 8: RAM + memtest greske -> fizicki kvar RAM
+rule "Nivo2 - Fizicki kvar RAM"
+    when
+        KomponentaFakt(tipKomponente == TipKomponente.RAM)
+        $s : SimptomFakt(memtestGreske > 0)
+        not KvarFakt(tipKvara == TipKvara.FIZICKI_KVAR_RAM)
+    then
+        insert(new KvarFakt(TipKvara.FIZICKI_KVAR_RAM, TipKomponente.RAM));
+        System.out.println("Nivo 2: Memtest greske - tip kvara FIZICKI_KVAR_RAM");
+end
