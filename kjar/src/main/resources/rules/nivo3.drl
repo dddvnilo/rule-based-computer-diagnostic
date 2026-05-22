@@ -6,49 +6,31 @@ import com.ftn.sbnz.model.DijagnozaFakt;
 import com.ftn.sbnz.model.DijagnozaFakt.Ozbiljnost;
 import com.ftn.sbnz.model.SimptomFakt;
 
-// Pravilo 9: Kvar ventilatora -> KRITICNO
 rule "Nivo3 - Dijagnoza kvar ventilatora"
     when
         $k : KvarFakt(tipKvara == TipKvara.KVAR_VENTILATORA)
-        not DijagnozaFakt(tipKvara == TipKvara.KVAR_VENTILATORA)
+        not DijagnozaFakt(kvar == $k)
     then
-        insert(new DijagnozaFakt(
-            $k.getKomponenta(),
-            TipKvara.KVAR_VENTILATORA,
-            Ozbiljnost.KRITICNO,
-            "Hitno iskljuciti racunar. Zameniti CPU ventilator."
-        ));
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO, "Hitno iskljuciti racunar. Zameniti CPU ventilator."));
         System.out.println("Nivo 3: KRITICNO - kvar ventilatora");
 end
 
-// Pravilo 10: Istrosena termalna pasta -> UPOZORENJE
 rule "Nivo3 - Dijagnoza istrosena termalna pasta"
     when
         $k : KvarFakt(tipKvara == TipKvara.ISTROSENA_TERMALNA_PASTA)
-        not DijagnozaFakt(tipKvara == TipKvara.ISTROSENA_TERMALNA_PASTA)
+        not DijagnozaFakt(kvar == $k)
     then
-        insert(new DijagnozaFakt(
-            $k.getKomponenta(),
-            TipKvara.ISTROSENA_TERMALNA_PASTA,
-            Ozbiljnost.UPOZORENJE,
-            "Planirati zamenu termalne paste na CPU-u."
-        ));
+        insert(new DijagnozaFakt($k, Ozbiljnost.UPOZORENJE, "Planirati zamenu termalne paste na CPU-u."));
         System.out.println("Nivo 3: UPOZORENJE - istrosena termalna pasta");
 end
 
-// Pravilo 11: Pregrevanje GPU -> KRITICNO ako > 100, UPOZORENJE ako > 95
 rule "Nivo3 - Dijagnoza pregrevanje GPU kriticno"
     when
         $k : KvarFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
         SimptomFakt(temperaturaGPU > 100)
-        not DijagnozaFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
+        not DijagnozaFakt(kvar == $k)
     then
-        insert(new DijagnozaFakt(
-            $k.getKomponenta(),
-            TipKvara.PREGREVANJE_GPU,
-            Ozbiljnost.KRITICNO,
-            "Odmah iskljuciti racunar. Proveriti GPU ventilator i termopaste."
-        ));
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO, "Odmah iskljuciti racunar. Proveriti GPU ventilator i termopaste."));
         System.out.println("Nivo 3: KRITICNO - pregrevanje GPU");
 end
 
@@ -56,28 +38,17 @@ rule "Nivo3 - Dijagnoza pregrevanje GPU upozorenje"
     when
         $k : KvarFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
         SimptomFakt(temperaturaGPU <= 100)
-        not DijagnozaFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
+        not DijagnozaFakt(kvar == $k)
     then
-        insert(new DijagnozaFakt(
-            $k.getKomponenta(),
-            TipKvara.PREGREVANJE_GPU,
-            Ozbiljnost.UPOZORENJE,
-            "Pratiti temperaturu GPU-a. Proveriti ventilaciju."
-        ));
+        insert(new DijagnozaFakt($k, Ozbiljnost.UPOZORENJE, "Pratiti temperaturu GPU-a. Proveriti ventilaciju."));
         System.out.println("Nivo 3: UPOZORENJE - pregrevanje GPU");
 end
 
-// Pravilo 12: Fizicki kvar RAM -> KRITICNO
 rule "Nivo3 - Dijagnoza fizicki kvar RAM"
     when
         $k : KvarFakt(tipKvara == TipKvara.FIZICKI_KVAR_RAM)
-        not DijagnozaFakt(tipKvara == TipKvara.FIZICKI_KVAR_RAM)
+        not DijagnozaFakt(kvar == $k)
     then
-        insert(new DijagnozaFakt(
-            $k.getKomponenta(),
-            TipKvara.FIZICKI_KVAR_RAM,
-            Ozbiljnost.KRITICNO,
-            "Zameniti RAM modul. Do tada izbegavati upotrebu racunara."
-        ));
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO, "Zameniti RAM modul. Do tada izbegavati upotrebu racunara."));
         System.out.println("Nivo 3: KRITICNO - fizicki kvar RAM");
 end

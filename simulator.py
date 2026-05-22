@@ -65,8 +65,10 @@ for naziv, scenario in scenarios:
         dijagnoze = response.json()
         if dijagnoze:
             for d in dijagnoze:
-                print(f"Komponenta : {d.get('komponenta')}")
-                print(f"Tip kvara  : {d.get('tipKvara')}")
+                kvar = d.get('kvar', {})
+                komponenta = kvar.get('komponenta', {})
+                print(f"Komponenta : {komponenta.get('tipKomponente')}")
+                print(f"Tip kvara  : {kvar.get('tipKvara')}")
                 print(f"Ozbiljnost : {d.get('ozbiljnost')}")
                 print(f"Preporuka  : {d.get('preporuka')}")
         else:

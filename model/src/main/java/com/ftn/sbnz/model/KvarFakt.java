@@ -13,11 +13,11 @@ public class KvarFakt {
     }
 
     private TipKvara tipKvara;
-    private KomponentaFakt.TipKomponente komponenta;
+    private KomponentaFakt komponenta;
 
     public KvarFakt() {}
 
-    public KvarFakt(TipKvara tipKvara, KomponentaFakt.TipKomponente komponenta) {
+    public KvarFakt(TipKvara tipKvara, KomponentaFakt komponenta) {
         this.tipKvara = tipKvara;
         this.komponenta = komponenta;
     }
@@ -25,6 +25,6 @@ public class KvarFakt {
     public TipKvara getTipKvara() { return tipKvara; }
     public void setTipKvara(TipKvara tipKvara) { this.tipKvara = tipKvara; }
 
-    public KomponentaFakt.TipKomponente getKomponenta() { return komponenta; }
-    public void setKomponenta(KomponentaFakt.TipKomponente komponenta) { this.komponenta = komponenta; }
+    public KomponentaFakt getKomponenta() { return komponenta; }
+    public void setKomponenta(KomponentaFakt komponenta) { this.komponenta = komponenta; }
 }

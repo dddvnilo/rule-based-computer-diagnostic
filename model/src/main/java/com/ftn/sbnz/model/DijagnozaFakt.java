@@ -6,26 +6,20 @@ public class DijagnozaFakt {
         INFO, UPOZORENJE, KRITICNO
     }
 
-    private KomponentaFakt.TipKomponente komponenta;
-    private KvarFakt.TipKvara tipKvara;
+    private KvarFakt kvar;
     private Ozbiljnost ozbiljnost;
     private String preporuka;
 
     public DijagnozaFakt() {}
 
-    public DijagnozaFakt(KomponentaFakt.TipKomponente komponenta, KvarFakt.TipKvara tipKvara,
-                         Ozbiljnost ozbiljnost, String preporuka) {
-        this.komponenta = komponenta;
-        this.tipKvara = tipKvara;
+    public DijagnozaFakt(KvarFakt kvar, Ozbiljnost ozbiljnost, String preporuka) {
+        this.kvar = kvar;
         this.ozbiljnost = ozbiljnost;
         this.preporuka = preporuka;
     }
 
-    public KomponentaFakt.TipKomponente getKomponenta() { return komponenta; }
-    public void setKomponenta(KomponentaFakt.TipKomponente komponenta) { this.komponenta = komponenta; }
-
-    public KvarFakt.TipKvara getTipKvara() { return tipKvara; }
-    public void setTipKvara(KvarFakt.TipKvara tipKvara) { this.tipKvara = tipKvara; }
+    public KvarFakt getKvar() { return kvar; }
+    public void setKvar(KvarFakt kvar) { this.kvar = kvar; }
 
     public Ozbiljnost getOzbiljnost() { return ozbiljnost; }
     public void setOzbiljnost(Ozbiljnost ozbiljnost) { this.ozbiljnost = ozbiljnost; }
@@ -35,8 +29,8 @@ public class DijagnozaFakt {
 
     @Override
     public String toString() {
-        return "[" + ozbiljnost + "] Komponenta: " + komponenta +
-               " | Kvar: " + tipKvara +
+        return "[" + ozbiljnost + "] Komponenta: " + kvar.getKomponenta().getTipKomponente() +
+               " | Kvar: " + kvar.getTipKvara() +
                " | Preporuka: " + preporuka;
     }
 }
