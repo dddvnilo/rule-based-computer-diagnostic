@@ -1,0 +1,28 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Maven wrapper logs/cache
+.mvn/wrapper/maven-wrapper.properties
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Maven local repo
+.m2/
+
+# Spring Boot
+*.jar
+*.war
