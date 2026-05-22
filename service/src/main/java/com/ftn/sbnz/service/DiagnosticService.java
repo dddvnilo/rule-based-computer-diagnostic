@@ -19,14 +19,10 @@ public class DiagnosticService {
     }
 
     public List<DijagnozaFakt> dijagnostikuj(SimptomFakt simptom) {
-        System.out.println("DEBUG: KieBases dostupne: " + kieContainer.getKieBaseNames());
         KieSession session = kieContainer.newKieSession("DiagnosticsKSession");
-        System.out.println("DEBUG: Sesija kreirana: " + (session != null));
         try {
             session.insert(simptom);
-            int fired = session.fireAllRules();
-            System.out.println("DEBUG: Pravila koja su se aktivirala: " + fired);
-            System.out.println("DEBUG: Ukupno objekata u sesiji: " + session.getObjects().size());
+            session.fireAllRules();
 
             List<DijagnozaFakt> rezultati = new ArrayList<>();
             session.getObjects(obj -> obj instanceof DijagnozaFakt)
