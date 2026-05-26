@@ -25,7 +25,6 @@ Predloženo rešenje razlikuje se od postojećih po tome što:
 
 - Koristi rule-based rezonovanje sa ulančavanjem pravila.
 - Integriše Complex Event Processing (CEP) za detekciju ponavljajućih obrazaca ponašanja u realnom vremenu.
-- Podržava backward chaining za interaktivnu proveru korisničkih hipoteza.
 - Uzima u obzir kombinovane kvarove i međuzavisnosti između komponenti.
 - Generiše objašnjenja i konkretne preporuke razumljive korisniku bez tehničkog predznanja.
 
@@ -77,15 +76,15 @@ Svaka od 9 komponenti modelovana je kao templejt koji sadrži relevantne atribut
 
 | Komponenta | Ključni atributi | Mogući kvarovi |
 |---|---|---|
-| **CPU** | temperatura, utilization %, socket tip, TDP | pregrevanje, fizički kvar |
-| **GPU** | temperatura, VRAM zauzetost, fan speed (RPM) | pregrevanje, VRAM kvar, driver konflikt |
-| **RAM** | kapacitet, frekvencija, zauzetost %, memtest greške | fizički kvar ćelija, nekompatibilnost |
+| **CPU** | temperatura, utilization % | pregrevanje |
+| **GPU** | temperatura, fan speed (RPM) | pregrevanje, VRAM kvar |
+| **RAM** | zauzetost %, memtest greške | fizički kvar ćelija |
 | **Disk** | SMART parametri, temperatura, power-on hours | fizički kvar, loši sektori, istrošenost |
-| **PSU** | napon po linijama (+12V, +5V, +3.3V), wattage | nestabilan napon, nedovoljan wattage |
+| **PSU** | napon po linijama (+12V, +5V, +3.3V), wattage | nestabilan napon |
 | **Motherboard** | temperatura chipseta, POST kodovi, VRM status | loši kondenzatori, VRM kvar, BIOS problem |
-| **Cooling system** | RPM po ventilatorima, broj ventilatora, case temperatura | istrošen ležaj, ventilator stao, loš airflow |
+| **Cooling system** | RPM po ventilatorima, broj ventilatora, case temperatura | istrošen ležaj, ventilator stao |
 | **Network** | packet loss %, ping, brzina konekcije | driver konflikt, fizički kvar čipa |
-| **OS/Softver** | uptime, event log greške, driver verzije | malware, zastareli drajveri, corrupt fajlovi |
+| **OS/Softver** | event log greške | zastareli drajveri, corrupt fajlovi |
 
 #### Pravila (IF-THEN)
 
