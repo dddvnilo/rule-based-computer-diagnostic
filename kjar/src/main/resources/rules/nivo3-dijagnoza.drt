@@ -1,0 +1,24 @@
+template header
+tipKvara
+ozbiljnost
+preporuka
+
+package com.ftn.sbnz.kjar;
+
+import com.ftn.sbnz.model.KvarFakt;
+import com.ftn.sbnz.model.KvarFakt.TipKvara;
+import com.ftn.sbnz.model.DijagnozaFakt;
+import com.ftn.sbnz.model.DijagnozaFakt.Ozbiljnost;
+
+template "nivo3_dijagnoza"
+
+rule "Nivo3 - Dijagnoza @{tipKvara}"
+    when
+        $k : KvarFakt(tipKvara == TipKvara.@{tipKvara})
+        not DijagnozaFakt(kvar == $k)
+    then
+        insert(new DijagnozaFakt($k, Ozbiljnost.@{ozbiljnost}, "@{preporuka}"));
+        System.out.println("Nivo 3 (template): @{ozbiljnost} - @{tipKvara}");
+end
+
+end template

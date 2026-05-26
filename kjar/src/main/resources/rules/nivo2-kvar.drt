@@ -1,0 +1,28 @@
+template header
+komponenta
+atribut
+operator
+prag
+tipKvara
+
+package com.ftn.sbnz.kjar;
+
+import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.KomponentaFakt;
+import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
+import com.ftn.sbnz.model.KvarFakt;
+import com.ftn.sbnz.model.KvarFakt.TipKvara;
+
+template "nivo2_kvar"
+
+rule "Nivo2 - @{tipKvara}"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.@{komponenta})
+        $s : SimptomFakt(@{atribut} @{operator} @{prag})
+        not KvarFakt(tipKvara == TipKvara.@{tipKvara})
+    then
+        insert(new KvarFakt(TipKvara.@{tipKvara}, $komp));
+        System.out.println("Nivo 2 (template): @{tipKvara}");
+end
+
+end template
