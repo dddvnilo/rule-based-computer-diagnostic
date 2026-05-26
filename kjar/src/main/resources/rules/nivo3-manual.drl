@@ -6,6 +6,20 @@ import com.ftn.sbnz.model.DijagnozaFakt;
 import com.ftn.sbnz.model.DijagnozaFakt.Ozbiljnost;
 import com.ftn.sbnz.model.SimptomFakt;
 
+// Rucno definisano - detektuje PSU kao koren uzrok visestrukih kvarova
+// salience 10 osigurava da ovo pravilo puca pre template pravila za NESTABILAN_NAPON
+rule "Nivo3 - PSU root cause visestrukih kvarova"
+    salience 10
+    when
+        $psuKvar : KvarFakt(tipKvara == TipKvara.NESTABILAN_NAPON)
+        $drugiKvar : KvarFakt(this != $psuKvar)
+        not DijagnozaFakt(kvar == $psuKvar)
+    then
+        insert(new DijagnozaFakt($psuKvar, Ozbiljnost.KRITICNO,
+            "KOREN UZROK: Nestabilan napon uzrokuje kvarove na vise komponenti. Hitno zameniti napajanje pre daljih intervencija."));
+        System.out.println("Nivo 3 (manual): PSU root cause - visestruki kvarovi detektovani");
+end
+
 // Rucno definisano - ozbiljnost zavisi od konkretne vrednosti temperature GPU
 rule "Nivo3 - Dijagnoza pregrevanje GPU kriticno"
     when

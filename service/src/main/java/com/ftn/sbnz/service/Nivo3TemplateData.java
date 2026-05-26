@@ -11,10 +11,12 @@ public class Nivo3TemplateData {
         List<Map<String, Object>> rows = new ArrayList<>();
 
         // Cooling
-        rows.add(row("KVAR_VENTILATORA",        "KRITICNO",   "Hitno iskljuciti racunar. Proveriti CPU ventilator (moguci kvar lezaja ili zacepljenje prasinom)."));
+        rows.add(row("KVAR_VENTILATORA",        "KRITICNO",   "Hitno iskljuciti racunar. Proveriti ventilator komponente (moguci kvar lezaja ili zacepljenje prasinom)."));
         rows.add(row("ISTROSENA_TERMALNA_PASTA", "UPOZORENJE", "Planirati zamenu termalne paste na CPU-u."));
         // CPU
         rows.add(row("PREGREVANJE_CPU",          "KRITICNO",   "CPU se pregreva pod opterecenjem. Proveriti hladjenje i aplikacije koje opterecuju procesor."));
+        // GPU
+        rows.add(row("VRAM_KVAR",                "KRITICNO",   "Artefakti bez pregrevanja ukazuju na kvar VRAM memorije. Zameniti graficku karticu."));
         // RAM
         rows.add(row("FIZICKI_KVAR_RAM",         "KRITICNO",   "Zameniti RAM modul. Do tada izbegavati upotrebu racunara."));
         // Disk

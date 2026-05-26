@@ -19,7 +19,7 @@ rule "Nivo2 - @{komponenta} @{atribut} @{tipKvara}"
     when
         $komp : KomponentaFakt(tipKomponente == TipKomponente.@{komponenta})
         $s : SimptomFakt(@{atribut} @{operator} @{prag})
-        not KvarFakt(tipKvara == TipKvara.@{tipKvara})
+        not KvarFakt(tipKvara == TipKvara.@{tipKvara}, komponenta == $komp)
     then
         insert(new KvarFakt(TipKvara.@{tipKvara}, $komp));
         System.out.println("Nivo 2 (template): @{tipKvara}");

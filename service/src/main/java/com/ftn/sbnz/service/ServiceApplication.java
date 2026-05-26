@@ -61,7 +61,8 @@ public class ServiceApplication {
 				throw new RuntimeException("Template fajl " + templatePath + " nije pronadjen na classpath-u");
 			}
 			String generatedDrl = new ObjectDataCompiler().compile(data, templateStream);
-			System.out.println("=== Generisana pravila iz " + templatePath + " ===\n" + generatedDrl);
+			long ruleCount = generatedDrl.lines().filter(l -> l.trim().startsWith("rule ")).count();
+			System.out.println("[Drools] " + outputName.replace("-generated.drl", "") + ": generisano " + ruleCount + " pravila iz templeta");
 			kfs.write("src/main/resources/rules/" + outputName,
 					ks.getResources().newByteArrayResource(generatedDrl.getBytes(StandardCharsets.UTF_8)));
 		} catch (IOException e) {

@@ -126,12 +126,76 @@ scenario14 = {**prazan_simptom(),
 }
 
 # Kombinovani kvar: PSU uzrokuje probleme na vise komponenti
+# napon12V i 5V pad + pregrevanje GPU kao posledica nestabilnog napajanja
 scenario15 = {**prazan_simptom(),
     "napon12V": 10.5,
     "napon5V": 4.6,
-    "temperaturaCPU": 88.0,
+    "temperaturaGPU": 97.0,
     "ucestaliRestartovi": True,
-    "zamrzavanje": True
+    "artefaktiNaEkranu": True
+}
+
+# VRAM kvar: artefakti sa normalnom GPU temperaturom
+scenario16 = {**prazan_simptom(),
+    "temperaturaGPU": 72.0,
+    "artefaktiNaEkranu": True
+}
+
+# GPU ventilator stao
+scenario17 = {**prazan_simptom(),
+    "rpmGPUVentilator": 150,
+    "temperaturaGPU": 88.0
+}
+
+# Case ventilator stao
+scenario18 = {**prazan_simptom(),
+    "rpmCaseVentilator": 100,
+    "temperaturaCPU": 91.0
+}
+
+# Spor rad - mapira na DISK + RAM + CPU
+scenario19 = {**prazan_simptom(),
+    "sporRad": True,
+    "ramZauzetost": 88.0,
+    "memtestGreske": 2,
+    "diskPowerOnHours": 35000
+}
+
+# SMART pending sektori
+scenario20 = {**prazan_simptom(),
+    "smartPendingSectors": 7,
+    "sporRad": True
+}
+
+# SMART uncorrectable errors
+scenario21 = {**prazan_simptom(),
+    "smartUncorrectableErrors": 2
+}
+
+# Niska brzina mrezne veze
+scenario22 = {**prazan_simptom(),
+    "mrezBrzinaMbps": 45.0,
+    "problemiSaMrezom": True
+}
+
+# BSOD IRQL_NOT_LESS_OR_EQUAL - driver kvar OS
+scenario23 = {**prazan_simptom(),
+    "bsod": True,
+    "bsodKod": "IRQL_NOT_LESS_OR_EQUAL"
+}
+
+# BSOD PAGE_FAULT_IN_NONPAGED_AREA - RAM i DISK sumnja
+scenario24 = {**prazan_simptom(),
+    "bsod": True,
+    "bsodKod": "PAGE_FAULT_IN_NONPAGED_AREA",
+    "smartPendingSectors": 3,
+    "memtestGreske": 1
+}
+
+# BSOD KERNEL_SECURITY_CHECK_FAILURE - OS corrupt
+scenario25 = {**prazan_simptom(),
+    "bsod": True,
+    "bsodKod": "KERNEL_SECURITY_CHECK_FAILURE"
 }
 
 scenarios = [
@@ -150,6 +214,16 @@ scenarios = [
     ("Scenario 13: Zastareli drajveri (7 event log gresaka)",             scenario13),
     ("Scenario 14: Pregrevanje CPU pod opterecenjem",                     scenario14),
     ("Scenario 15: Kombinovani kvar - nestabilan PSU",                    scenario15),
+    ("Scenario 16: VRAM kvar (artefakti + normalna GPU temp)",            scenario16),
+    ("Scenario 17: GPU ventilator stao",                                  scenario17),
+    ("Scenario 18: Case ventilator stao + visoka temp CPU",               scenario18),
+    ("Scenario 19: Spor rad - RAM + DISK + CPU sumnja",                   scenario19),
+    ("Scenario 20: SMART pending sektori",                                scenario20),
+    ("Scenario 21: SMART uncorrectable errors",                           scenario21),
+    ("Scenario 22: Niska brzina mrezne veze (45 Mbps)",                   scenario22),
+    ("Scenario 23: BSOD IRQL_NOT_LESS_OR_EQUAL - driver kvar",           scenario23),
+    ("Scenario 24: BSOD PAGE_FAULT_IN_NONPAGED_AREA - RAM + DISK",       scenario24),
+    ("Scenario 25: BSOD KERNEL_SECURITY_CHECK_FAILURE - OS corrupt",     scenario25),
 ]
 
 for naziv, scenario in scenarios:

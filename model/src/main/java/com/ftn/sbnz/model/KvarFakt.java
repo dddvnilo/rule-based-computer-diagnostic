@@ -10,6 +10,7 @@ public class KvarFakt {
         PREGREVANJE_CPU,
         // GPU
         PREGREVANJE_GPU,
+        VRAM_KVAR,
         // RAM
         FIZICKI_KVAR_RAM,
         // Disk

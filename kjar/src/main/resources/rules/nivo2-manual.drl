@@ -17,6 +17,39 @@ rule "Nivo2 - Istrosena termalna pasta"
         System.out.println("Nivo 2 (manual): ISTROSENA_TERMALNA_PASTA");
 end
 
+// Rucno definisano - string poređenje bsodKod ne moze u uniformni template
+rule "Nivo2 - BSOD driver kvar OS"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.OS)
+        $s : SimptomFakt(bsod == true, bsodKod == "IRQL_NOT_LESS_OR_EQUAL")
+        not KvarFakt(tipKvara == TipKvara.ZASTARELI_DRAJVERI, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.ZASTARELI_DRAJVERI, $komp));
+        System.out.println("Nivo 2 (manual): ZASTARELI_DRAJVERI via BSOD IRQL");
+end
+
+// Rucno definisano - string poređenje bsodKod ne moze u uniformni template
+rule "Nivo2 - BSOD kernel kvar OS"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.OS)
+        $s : SimptomFakt(bsod == true, bsodKod == "KERNEL_SECURITY_CHECK_FAILURE")
+        not KvarFakt(tipKvara == TipKvara.CORRUPT_FAJLOVI, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.CORRUPT_FAJLOVI, $komp));
+        System.out.println("Nivo 2 (manual): CORRUPT_FAJLOVI via BSOD KERNEL");
+end
+
+// Rucno definisano - zahteva istovremenu proveru dva atributa: artefakti + normalna temp (termalni kvar iskljucen)
+rule "Nivo2 - VRAM kvar GPU"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.GPU)
+        $s : SimptomFakt(artefaktiNaEkranu == true, temperaturaGPU <= 85)
+        not KvarFakt(tipKvara == TipKvara.VRAM_KVAR, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.VRAM_KVAR, $komp));
+        System.out.println("Nivo 2 (manual): VRAM_KVAR - artefakti bez pregrevanja");
+end
+
 // Rucno definisano - zahteva istovremenu proveru temperature i opterecenja CPU
 rule "Nivo2 - Pregrevanje CPU pod opterecenjem"
     when

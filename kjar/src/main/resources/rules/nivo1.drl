@@ -37,6 +37,16 @@ end
 
 // === GPU ===
 
+rule "Nivo1 - GPU ventilator stao"
+    when
+        $s : SimptomFakt(rpmGPUVentilator > 0, rpmGPUVentilator < 300)
+        not KomponentaFakt(tipKomponente == TipKomponente.GPU)
+    then
+        insert(new KomponentaFakt(TipKomponente.GPU));
+        insert(new KomponentaFakt(TipKomponente.COOLING));
+        System.out.println("Nivo 1: GPU ventilator stao - sumnja na GPU i COOLING");
+end
+
 rule "Nivo1 - Artefakti na ekranu"
     when
         $s : SimptomFakt(artefaktiNaEkranu == true)
@@ -86,13 +96,67 @@ rule "Nivo1 - SMART reallocated sektori"
         System.out.println("Nivo 1: SMART reallocated sektori - sumnja na DISK");
 end
 
-rule "Nivo1 - Spor rad sistema"
+rule "Nivo1 - Spor rad sistema - Disk"
     when
         $s : SimptomFakt(sporRad == true)
         not KomponentaFakt(tipKomponente == TipKomponente.DISK)
     then
         insert(new KomponentaFakt(TipKomponente.DISK));
         System.out.println("Nivo 1: Spor rad - sumnja na DISK");
+end
+
+rule "Nivo1 - Spor rad sistema - RAM"
+    when
+        $s : SimptomFakt(sporRad == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.RAM)
+    then
+        insert(new KomponentaFakt(TipKomponente.RAM));
+        System.out.println("Nivo 1: Spor rad - sumnja na RAM");
+end
+
+rule "Nivo1 - Spor rad sistema - CPU"
+    when
+        $s : SimptomFakt(sporRad == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.CPU)
+    then
+        insert(new KomponentaFakt(TipKomponente.CPU));
+        System.out.println("Nivo 1: Spor rad - sumnja na CPU");
+end
+
+rule "Nivo1 - SMART pending sektori"
+    when
+        $s : SimptomFakt(smartPendingSectors > 0)
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1: SMART pending sektori - sumnja na DISK");
+end
+
+rule "Nivo1 - SMART uncorrectable greske"
+    when
+        $s : SimptomFakt(smartUncorrectableErrors > 0)
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1: SMART uncorrectable greske - sumnja na DISK");
+end
+
+rule "Nivo1 - Visok broj radnih sati diska"
+    when
+        $s : SimptomFakt(diskPowerOnHours > 30000)
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1: Visok broj radnih sati - sumnja na DISK");
+end
+
+rule "Nivo1 - Niska brzina mrezne veze"
+    when
+        $s : SimptomFakt(mrezBrzinaMbps > 0, mrezBrzinaMbps < 100)
+        not KomponentaFakt(tipKomponente == TipKomponente.NETWORK)
+    then
+        insert(new KomponentaFakt(TipKomponente.NETWORK));
+        System.out.println("Nivo 1: Niska brzina mreze - sumnja na NETWORK");
 end
 
 // === PSU ===
@@ -134,6 +198,15 @@ rule "Nivo1 - Ucestali restartovi"
         System.out.println("Nivo 1: Ucestali restartovi - sumnja na PSU i MOTHERBOARD");
 end
 
+rule "Nivo1 - Case ventilator stao"
+    when
+        $s : SimptomFakt(rpmCaseVentilator > 0, rpmCaseVentilator < 200)
+        not KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+    then
+        insert(new KomponentaFakt(TipKomponente.COOLING));
+        System.out.println("Nivo 1: Case ventilator stao - sumnja na COOLING");
+end
+
 // === MOTHERBOARD ===
 
 rule "Nivo1 - Visoka temperatura chipseta"
@@ -172,6 +245,44 @@ rule "Nivo1 - Korisnik prijavljuje probleme sa mrezom"
     then
         insert(new KomponentaFakt(TipKomponente.NETWORK));
         System.out.println("Nivo 1: Problemi sa mrezom - sumnja na NETWORK");
+end
+
+// === BSOD kodovi ===
+
+rule "Nivo1 - BSOD IRQL Not Less Or Equal"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "IRQL_NOT_LESS_OR_EQUAL")
+        not KomponentaFakt(tipKomponente == TipKomponente.OS)
+    then
+        insert(new KomponentaFakt(TipKomponente.OS));
+        System.out.println("Nivo 1: BSOD IRQL_NOT_LESS_OR_EQUAL - sumnja na OS (driver)");
+end
+
+rule "Nivo1 - BSOD Page Fault - RAM"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
+        not KomponentaFakt(tipKomponente == TipKomponente.RAM)
+    then
+        insert(new KomponentaFakt(TipKomponente.RAM));
+        System.out.println("Nivo 1: BSOD PAGE_FAULT_IN_NONPAGED_AREA - sumnja na RAM");
+end
+
+rule "Nivo1 - BSOD Page Fault - Disk"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1: BSOD PAGE_FAULT_IN_NONPAGED_AREA - sumnja na DISK");
+end
+
+rule "Nivo1 - BSOD Kernel Security Check Failure"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "KERNEL_SECURITY_CHECK_FAILURE")
+        not KomponentaFakt(tipKomponente == TipKomponente.OS)
+    then
+        insert(new KomponentaFakt(TipKomponente.OS));
+        System.out.println("Nivo 1: BSOD KERNEL_SECURITY_CHECK_FAILURE - sumnja na OS");
 end
 
 // === OS ===
