@@ -15,7 +15,7 @@ import com.ftn.sbnz.model.KvarFakt.TipKvara;
 
 template "nivo2_kvar"
 
-rule "Nivo2 - @{tipKvara}"
+rule "Nivo2 - @{komponenta} @{atribut} @{tipKvara}"
     when
         $komp : KomponentaFakt(tipKomponente == TipKomponente.@{komponenta})
         $s : SimptomFakt(@{atribut} @{operator} @{prag})

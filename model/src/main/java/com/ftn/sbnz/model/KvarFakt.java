@@ -3,13 +3,28 @@ package com.ftn.sbnz.model;
 public class KvarFakt {
 
     public enum TipKvara {
+        // Cooling
         KVAR_VENTILATORA,
         ISTROSENA_TERMALNA_PASTA,
+        // CPU
+        PREGREVANJE_CPU,
+        // GPU
         PREGREVANJE_GPU,
+        // RAM
         FIZICKI_KVAR_RAM,
-        DRIVER_KONFLIKT,
+        // Disk
+        LOSI_SEKTORI_DISK,
+        ISTROSENOST_DISKA,
+        // PSU
         NESTABILAN_NAPON,
-        LOSI_SEKTORI_DISK
+        // Motherboard
+        PREGREVANJE_CHIPSETA,
+        // Network
+        DRIVER_KONFLIKT,
+        FIZICKI_KVAR_MREZE,
+        // OS
+        ZASTARELI_DRAJVERI,
+        CORRUPT_FAJLOVI
     }
 
     private TipKvara tipKvara;

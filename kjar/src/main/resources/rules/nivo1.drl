@@ -4,7 +4,8 @@ import com.ftn.sbnz.model.SimptomFakt;
 import com.ftn.sbnz.model.KomponentaFakt;
 import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
 
-// Pravilo 1: Visoka temperatura CPU -> sumnja na CPU i Cooling
+// === CPU / COOLING ===
+
 rule "Nivo1 - Visoka temperatura CPU"
     when
         $s : SimptomFakt(temperaturaCPU > 90)
@@ -15,7 +16,27 @@ rule "Nivo1 - Visoka temperatura CPU"
         System.out.println("Nivo 1: Visoka temperatura CPU - sumnja na COOLING i CPU");
 end
 
-// Pravilo 2: Artefakti na ekranu -> sumnja na GPU
+rule "Nivo1 - Korisnik prijavljuje pregrevanje"
+    when
+        $s : SimptomFakt(pregrevanje == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+    then
+        insert(new KomponentaFakt(TipKomponente.COOLING));
+        insert(new KomponentaFakt(TipKomponente.CPU));
+        System.out.println("Nivo 1: Korisnik prijavljuje pregrevanje - sumnja na COOLING i CPU");
+end
+
+rule "Nivo1 - Neobicni zvukovi"
+    when
+        $s : SimptomFakt(neobicniZvukovi == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+    then
+        insert(new KomponentaFakt(TipKomponente.COOLING));
+        System.out.println("Nivo 1: Neobicni zvukovi - sumnja na COOLING");
+end
+
+// === GPU ===
+
 rule "Nivo1 - Artefakti na ekranu"
     when
         $s : SimptomFakt(artefaktiNaEkranu == true)
@@ -25,7 +46,17 @@ rule "Nivo1 - Artefakti na ekranu"
         System.out.println("Nivo 1: Artefakti na ekranu - sumnja na GPU");
 end
 
-// Pravilo 3: BSOD MEMORY_MANAGEMENT -> sumnja na RAM
+rule "Nivo1 - Visoka temperatura GPU"
+    when
+        $s : SimptomFakt(temperaturaGPU > 90)
+        not KomponentaFakt(tipKomponente == TipKomponente.GPU)
+    then
+        insert(new KomponentaFakt(TipKomponente.GPU));
+        System.out.println("Nivo 1: Visoka temperatura GPU - sumnja na GPU");
+end
+
+// === RAM ===
+
 rule "Nivo1 - BSOD Memory Management"
     when
         $s : SimptomFakt(bsod == true, bsodKod == "MEMORY_MANAGEMENT")
@@ -35,7 +66,87 @@ rule "Nivo1 - BSOD Memory Management"
         System.out.println("Nivo 1: BSOD MEMORY_MANAGEMENT - sumnja na RAM");
 end
 
-// Pravilo 4: Visok packet loss -> sumnja na Network
+rule "Nivo1 - Zamrzavanje sistema"
+    when
+        $s : SimptomFakt(zamrzavanje == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.RAM)
+    then
+        insert(new KomponentaFakt(TipKomponente.RAM));
+        System.out.println("Nivo 1: Zamrzavanje - sumnja na RAM");
+end
+
+// === DISK ===
+
+rule "Nivo1 - SMART reallocated sektori"
+    when
+        $s : SimptomFakt(smartReallocatedSectors > 0)
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1: SMART reallocated sektori - sumnja na DISK");
+end
+
+rule "Nivo1 - Spor rad sistema"
+    when
+        $s : SimptomFakt(sporRad == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1: Spor rad - sumnja na DISK");
+end
+
+// === PSU ===
+
+rule "Nivo1 - Nestabilan napon 12V"
+    when
+        $s : SimptomFakt(napon12V < 11.4)
+        not KomponentaFakt(tipKomponente == TipKomponente.PSU)
+    then
+        insert(new KomponentaFakt(TipKomponente.PSU));
+        System.out.println("Nivo 1: Nestabilan napon 12V - sumnja na PSU");
+end
+
+rule "Nivo1 - Nestabilan napon 5V"
+    when
+        $s : SimptomFakt(napon5V < 4.75)
+        not KomponentaFakt(tipKomponente == TipKomponente.PSU)
+    then
+        insert(new KomponentaFakt(TipKomponente.PSU));
+        System.out.println("Nivo 1: Nestabilan napon 5V - sumnja na PSU");
+end
+
+rule "Nivo1 - Nestabilan napon 3.3V"
+    when
+        $s : SimptomFakt(napon3V3 < 3.1)
+        not KomponentaFakt(tipKomponente == TipKomponente.PSU)
+    then
+        insert(new KomponentaFakt(TipKomponente.PSU));
+        System.out.println("Nivo 1: Nestabilan napon 3.3V - sumnja na PSU");
+end
+
+rule "Nivo1 - Ucestali restartovi"
+    when
+        $s : SimptomFakt(ucestaliRestartovi == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.PSU)
+    then
+        insert(new KomponentaFakt(TipKomponente.PSU));
+        insert(new KomponentaFakt(TipKomponente.MOTHERBOARD));
+        System.out.println("Nivo 1: Ucestali restartovi - sumnja na PSU i MOTHERBOARD");
+end
+
+// === MOTHERBOARD ===
+
+rule "Nivo1 - Visoka temperatura chipseta"
+    when
+        $s : SimptomFakt(temperaturaChipseta > 85)
+        not KomponentaFakt(tipKomponente == TipKomponente.MOTHERBOARD)
+    then
+        insert(new KomponentaFakt(TipKomponente.MOTHERBOARD));
+        System.out.println("Nivo 1: Visoka temperatura chipseta - sumnja na MOTHERBOARD");
+end
+
+// === NETWORK ===
+
 rule "Nivo1 - Visok packet loss"
     when
         $s : SimptomFakt(packetLoss > 10)
@@ -43,4 +154,42 @@ rule "Nivo1 - Visok packet loss"
     then
         insert(new KomponentaFakt(TipKomponente.NETWORK));
         System.out.println("Nivo 1: Visok packet loss - sumnja na NETWORK");
+end
+
+rule "Nivo1 - Visok ping"
+    when
+        $s : SimptomFakt(pingMs > 500)
+        not KomponentaFakt(tipKomponente == TipKomponente.NETWORK)
+    then
+        insert(new KomponentaFakt(TipKomponente.NETWORK));
+        System.out.println("Nivo 1: Visok ping - sumnja na NETWORK");
+end
+
+rule "Nivo1 - Korisnik prijavljuje probleme sa mrezom"
+    when
+        $s : SimptomFakt(problemiSaMrezom == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.NETWORK)
+    then
+        insert(new KomponentaFakt(TipKomponente.NETWORK));
+        System.out.println("Nivo 1: Problemi sa mrezom - sumnja na NETWORK");
+end
+
+// === OS ===
+
+rule "Nivo1 - Event log greske"
+    when
+        $s : SimptomFakt(eventLogGreske > 5)
+        not KomponentaFakt(tipKomponente == TipKomponente.OS)
+    then
+        insert(new KomponentaFakt(TipKomponente.OS));
+        System.out.println("Nivo 1: Event log greske - sumnja na OS");
+end
+
+rule "Nivo1 - Nestabilnost OS"
+    when
+        $s : SimptomFakt(nestabilnostOS == true)
+        not KomponentaFakt(tipKomponente == TipKomponente.OS)
+    then
+        insert(new KomponentaFakt(TipKomponente.OS));
+        System.out.println("Nivo 1: Nestabilnost OS - sumnja na OS");
 end

@@ -10,9 +10,20 @@ import com.ftn.sbnz.model.KvarFakt.TipKvara;
 rule "Nivo2 - Istrosena termalna pasta"
     when
         $komp : KomponentaFakt(tipKomponente == TipKomponente.COOLING)
-        $s : SimptomFakt(rpmVentilator >= 500, temperaturaCPU > 90)
+        $s : SimptomFakt(rpmCPUVentilator >= 500, temperaturaCPU > 90)
         not KvarFakt(tipKvara == TipKvara.ISTROSENA_TERMALNA_PASTA)
     then
         insert(new KvarFakt(TipKvara.ISTROSENA_TERMALNA_PASTA, $komp));
         System.out.println("Nivo 2 (manual): ISTROSENA_TERMALNA_PASTA");
+end
+
+// Rucno definisano - zahteva istovremenu proveru temperature i opterecenja CPU
+rule "Nivo2 - Pregrevanje CPU pod opterecenjem"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.CPU)
+        $s : SimptomFakt(temperaturaCPU > 90, cpuUtilizacija > 90)
+        not KvarFakt(tipKvara == TipKvara.PREGREVANJE_CPU)
+    then
+        insert(new KvarFakt(TipKvara.PREGREVANJE_CPU, $komp));
+        System.out.println("Nivo 2 (manual): PREGREVANJE_CPU");
 end

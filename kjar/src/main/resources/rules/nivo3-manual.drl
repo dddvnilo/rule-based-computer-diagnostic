@@ -6,7 +6,7 @@ import com.ftn.sbnz.model.DijagnozaFakt;
 import com.ftn.sbnz.model.DijagnozaFakt.Ozbiljnost;
 import com.ftn.sbnz.model.SimptomFakt;
 
-// Rucno definisano - zahteva istovremenu proveru KvarFakt i SimptomFakt vrednosti
+// Rucno definisano - ozbiljnost zavisi od konkretne vrednosti temperature GPU
 rule "Nivo3 - Dijagnoza pregrevanje GPU kriticno"
     when
         $k : KvarFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
@@ -17,13 +17,13 @@ rule "Nivo3 - Dijagnoza pregrevanje GPU kriticno"
         System.out.println("Nivo 3 (manual): KRITICNO - PREGREVANJE_GPU");
 end
 
-// Rucno definisano - zahteva istovremenu proveru KvarFakt i SimptomFakt vrednosti
+// Rucno definisano - ozbiljnost zavisi od konkretne vrednosti temperature GPU
 rule "Nivo3 - Dijagnoza pregrevanje GPU upozorenje"
     when
         $k : KvarFakt(tipKvara == TipKvara.PREGREVANJE_GPU)
         SimptomFakt(temperaturaGPU <= 100)
         not DijagnozaFakt(kvar == $k)
     then
-        insert(new DijagnozaFakt($k, Ozbiljnost.UPOZORENJE, "Pratiti temperaturu GPU-a. Proveriti ventilaciju."));
+        insert(new DijagnozaFakt($k, Ozbiljnost.UPOZORENJE, "Pratiti temperaturu GPU-a. Proveriti ventilaciju kucista."));
         System.out.println("Nivo 3 (manual): UPOZORENJE - PREGREVANJE_GPU");
 end
