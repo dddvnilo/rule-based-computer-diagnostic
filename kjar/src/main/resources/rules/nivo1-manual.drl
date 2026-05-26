@@ -1,0 +1,52 @@
+package com.ftn.sbnz.kjar;
+
+import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.KomponentaFakt;
+import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
+
+// === BSOD kodovi - string poredjenje ne moze u uniformni template ===
+
+rule "Nivo1 - BSOD Memory Management"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "MEMORY_MANAGEMENT")
+        not KomponentaFakt(tipKomponente == TipKomponente.RAM)
+    then
+        insert(new KomponentaFakt(TipKomponente.RAM));
+        System.out.println("Nivo 1 (manual): BSOD MEMORY_MANAGEMENT -> RAM");
+end
+
+rule "Nivo1 - BSOD IRQL Not Less Or Equal"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "IRQL_NOT_LESS_OR_EQUAL")
+        not KomponentaFakt(tipKomponente == TipKomponente.OS)
+    then
+        insert(new KomponentaFakt(TipKomponente.OS));
+        System.out.println("Nivo 1 (manual): BSOD IRQL_NOT_LESS_OR_EQUAL -> OS");
+end
+
+rule "Nivo1 - BSOD Page Fault - RAM"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
+        not KomponentaFakt(tipKomponente == TipKomponente.RAM)
+    then
+        insert(new KomponentaFakt(TipKomponente.RAM));
+        System.out.println("Nivo 1 (manual): BSOD PAGE_FAULT -> RAM");
+end
+
+rule "Nivo1 - BSOD Page Fault - Disk"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
+        not KomponentaFakt(tipKomponente == TipKomponente.DISK)
+    then
+        insert(new KomponentaFakt(TipKomponente.DISK));
+        System.out.println("Nivo 1 (manual): BSOD PAGE_FAULT -> DISK");
+end
+
+rule "Nivo1 - BSOD Kernel Security Check Failure"
+    when
+        $s : SimptomFakt(bsod == true, bsodKod == "KERNEL_SECURITY_CHECK_FAILURE")
+        not KomponentaFakt(tipKomponente == TipKomponente.OS)
+    then
+        insert(new KomponentaFakt(TipKomponente.OS));
+        System.out.println("Nivo 1 (manual): BSOD KERNEL_SECURITY_CHECK_FAILURE -> OS");
+end

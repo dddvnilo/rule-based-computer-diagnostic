@@ -34,13 +34,16 @@ public class ServiceApplication {
 		kieBaseModel.newKieSessionModel("DiagnosticsKSession").setDefault(true);
 		kfs.writeKModuleXML(kieModuleModel.toXML());
 
-		kfs.write("src/main/resources/rules/nivo1.drl",
-				ks.getResources().newClassPathResource("rules/nivo1.drl"));
+		kfs.write("src/main/resources/rules/nivo1-manual.drl",
+				ks.getResources().newClassPathResource("rules/nivo1-manual.drl"));
 		kfs.write("src/main/resources/rules/nivo2-manual.drl",
 				ks.getResources().newClassPathResource("rules/nivo2-manual.drl"));
 		kfs.write("src/main/resources/rules/nivo3-manual.drl",
 				ks.getResources().newClassPathResource("rules/nivo3-manual.drl"));
 
+		generateFromTemplate(kfs, ks, "/rules/nivo1-boolean.drt", Nivo1BooleanTemplateData.getRows(), "nivo1-boolean-generated.drl");
+		generateFromTemplate(kfs, ks, "/rules/nivo1-numeric.drt", Nivo1NumericTemplateData.getRows(), "nivo1-numeric-generated.drl");
+		generateFromTemplate(kfs, ks, "/rules/nivo1-range.drt",   Nivo1RangeTemplateData.getRows(),   "nivo1-range-generated.drl");
 		generateFromTemplate(kfs, ks, "/rules/nivo2-kvar.drt", Nivo2TemplateData.getRows(), "nivo2-generated.drl");
 		generateFromTemplate(kfs, ks, "/rules/nivo3-dijagnoza.drt", Nivo3TemplateData.getRows(), "nivo3-generated.drl");
 
