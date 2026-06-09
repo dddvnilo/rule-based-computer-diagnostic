@@ -1,0 +1,97 @@
+package com.ftn.sbnz.kjar;
+
+import com.ftn.sbnz.model.MerenjeEvent;
+import com.ftn.sbnz.model.CepAlarmFakt;
+
+declare MerenjeEvent
+    @role(event)
+    @expires(24h)
+end
+
+// CepAlarmFakt istice nakon 5 minuta - automatski cooldown izmedju ponovljenih alarma istog tipa
+declare CepAlarmFakt
+    @role(event)
+    @expires(10s)
+end
+
+// CEP-1: temperatura CPU > 90C se pojavi 3+ puta u roku od 10 minuta
+rule "CEP-1: Ponavljajuce pregrevanje CPU"
+    when
+        Number(intValue >= 3) from accumulate(
+            MerenjeEvent(temperaturaCPU > 90) over window:time(10m),
+            count(1)
+        )
+        not CepAlarmFakt(tip == "CEP1_CPU_TEMP")
+    then
+        insert(new CepAlarmFakt("CEP1_CPU_TEMP",
+            "Kriticno ponavljajuce pregrevanje CPU - temperatura > 90C detektovana 3+ puta u 10 minuta"));
+        System.out.println("[CEP-1] Ponavljajuce pregrevanje CPU detektovano");
+end
+
+// CEP-2: SMART greska na disku zabelezena 5+ puta u toku jednog dana
+rule "CEP-2: Ucestale SMART greske diska"
+    when
+        Number(intValue >= 5) from accumulate(
+            MerenjeEvent(smartReallocatedSectors > 0 || smartPendingSectors > 0 || smartUncorrectableErrors > 0)
+                over window:time(24h),
+            count(1)
+        )
+        not CepAlarmFakt(tip == "CEP2_SMART_DISK")
+    then
+        insert(new CepAlarmFakt("CEP2_SMART_DISK",
+            "Disk pokazuje znakove skorog otkaza - SMART greske detektovane 5+ puta u toku dana"));
+        System.out.println("[CEP-2] Ucestale SMART greske diska detektovane");
+end
+
+// CEP-3: ping > 200ms (priblizno 5x baseline od 40ms) u 3+ merenja tokom 5 minuta
+rule "CEP-3: Nestabilan ping"
+    when
+        Number(intValue >= 3) from accumulate(
+            MerenjeEvent(pingMs > 200) over window:time(5m),
+            count(1)
+        )
+        not CepAlarmFakt(tip == "CEP3_PING_SKOK")
+    then
+        insert(new CepAlarmFakt("CEP3_PING_SKOK",
+            "Nestabilan network adapter - ping > 200ms detektovan 3+ puta u 5 minuta"));
+        System.out.println("[CEP-3] Nestabilan ping detektovan");
+end
+
+// CEP-4: napon 12V oscilira - raspon max-min > 0.6V u poslednjih 5 minuta (min 5 merenja)
+rule "CEP-4: Oscilacija napona 12V"
+    when
+        Number(intValue >= 5) from accumulate(
+            MerenjeEvent($v : napon12V) over window:time(5m),
+            count(1)
+        )
+        $maxNapon : Number() from accumulate(
+            MerenjeEvent($v : napon12V) over window:time(5m),
+            max($v)
+        )
+        $minNapon : Number() from accumulate(
+            MerenjeEvent($v : napon12V) over window:time(5m),
+            min($v)
+        )
+        eval($maxNapon.doubleValue() - $minNapon.doubleValue() > 0.6)
+        not CepAlarmFakt(tip == "CEP4_NAPON_OSCILACIJA")
+    then
+        insert(new CepAlarmFakt("CEP4_NAPON_OSCILACIJA",
+            "Nestabilno napajanje - napon 12V oscilira u poslednjih 5 minuta (raspon > 0.6V)"));
+        System.out.println("[CEP-4] Oscilacija napona 12V detektovana: raspon = "
+            + ($maxNapon.doubleValue() - $minNapon.doubleValue()) + "V");
+end
+
+// CEP-5: rpmCPUVentilator opada u 5 uzastopnih merenja, svako unutar 2 minute od prethodnog
+rule "CEP-5: Progresivni pad RPM CPU ventilatora"
+    when
+        $e1 : MerenjeEvent($rpm1 : rpmCPUVentilator)
+        $e2 : MerenjeEvent(this after[0s, 2m] $e1, $rpm2 : rpmCPUVentilator, rpmCPUVentilator < $rpm1)
+        $e3 : MerenjeEvent(this after[0s, 2m] $e2, $rpm3 : rpmCPUVentilator, rpmCPUVentilator < $rpm2)
+        $e4 : MerenjeEvent(this after[0s, 2m] $e3, $rpm4 : rpmCPUVentilator, rpmCPUVentilator < $rpm3)
+        $e5 : MerenjeEvent(this after[0s, 2m] $e4, rpmCPUVentilator < $rpm4)
+        not CepAlarmFakt(tip == "CEP5_RPM_PAD")
+    then
+        insert(new CepAlarmFakt("CEP5_RPM_PAD",
+            "Ventilator CPU progresivno gubi brzinu - moguc kvar lezaja ili zaprecenje"));
+        System.out.println("[CEP-5] Progresivni pad RPM CPU ventilatora detektovan");
+end

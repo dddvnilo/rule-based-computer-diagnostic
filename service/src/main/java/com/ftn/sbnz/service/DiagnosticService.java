@@ -1,47 +1,71 @@
 package com.ftn.sbnz.service;
 
-import com.ftn.sbnz.model.DijagnozaFakt;
-import com.ftn.sbnz.model.KorisnikOdgovori;
-import com.ftn.sbnz.model.MerenjeEvent;
+import com.ftn.sbnz.model.*;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class DiagnosticService {
 
+    private final KieSession cepKieSession;
     private final KieContainer kieContainer;
-    private final MerenjeStore merenjeStore;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public DiagnosticService(KieContainer kieContainer, MerenjeStore merenjeStore) {
+    private volatile MerenjeEvent latestMerenje;
+
+    public DiagnosticService(KieSession cepKieSession, KieContainer kieContainer,
+                             SimpMessagingTemplate messagingTemplate) {
+        this.cepKieSession = cepKieSession;
         this.kieContainer = kieContainer;
-        this.merenjeStore = merenjeStore;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    public void updateMerenje(MerenjeEvent event) {
-        merenjeStore.setLatest(event);
+    // --- CEP: kontinualni monitoring ---
+
+    public synchronized void updateMerenje(MerenjeEvent event) {
+        latestMerenje = event;
+
+        Set<String> prethodniAlarmi = cepKieSession.getObjects(new ClassObjectFilter(CepAlarmFakt.class))
+                .stream().map(o -> ((CepAlarmFakt) o).getTip()).collect(Collectors.toSet());
+
+        cepKieSession.insert(event);
+        cepKieSession.fireAllRules(match -> match.getRule().getName().startsWith("CEP-"));
+
+        cepKieSession.getObjects(new ClassObjectFilter(CepAlarmFakt.class))
+                .stream()
+                .map(o -> (CepAlarmFakt) o)
+                .filter(a -> !prethodniAlarmi.contains(a.getTip()))
+                .forEach(alarm -> messagingTemplate.convertAndSend("/topic/alarmi", alarm));
     }
 
-    public List<DijagnozaFakt> dijagnostikuj(KorisnikOdgovori odgovori) {
-        if (!merenjeStore.hasData()) {
-            throw new IllegalStateException("Nema izmerenih vrednosti. Simulator jos nije poslao merenje.");
-        }
+    // --- Dijagnoza: request-based, izolована sesija ---
 
-        KieSession session = kieContainer.newKieSession("DiagnosticsKSession");
+    public synchronized List<DijagnozaFakt> dijagnostikuj(KorisnikOdgovori odgovori) {
+        KieSession session = kieContainer.newKieSession();
         try {
-            session.insert(merenjeStore.getLatest());
+            if (latestMerenje != null) {
+                session.insert(latestMerenje);
+            }
             session.insert(odgovori);
-            session.fireAllRules();
+            session.fireAllRules(match -> !match.getRule().getName().startsWith("CEP-"));
 
-            List<DijagnozaFakt> rezultati = new ArrayList<>();
-            session.getObjects(obj -> obj instanceof DijagnozaFakt)
-                   .forEach(obj -> rezultati.add((DijagnozaFakt) obj));
-            return rezultati;
+            List<DijagnozaFakt> dijagnoze = new ArrayList<>();
+            session.getObjects(new ClassObjectFilter(DijagnozaFakt.class))
+                    .forEach(obj -> dijagnoze.add((DijagnozaFakt) obj));
+            return dijagnoze;
         } finally {
             session.dispose();
+            // Korisnik je pokrenuo dijagnozu - CEP alarmi se resetuju za sledeci ciklus
+            cepKieSession.getFactHandles(new ClassObjectFilter(CepAlarmFakt.class))
+                    .forEach(cepKieSession::delete);
         }
     }
 }

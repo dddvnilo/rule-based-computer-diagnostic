@@ -24,12 +24,8 @@ public class DiagnosticController {
     }
 
     @PostMapping("/dijagnoza")
-    public ResponseEntity<?> dijagnostikuj(@RequestBody KorisnikOdgovori odgovori) {
-        try {
-            List<DijagnozaFakt> rezultati = diagnosticService.dijagnostikuj(odgovori);
-            return ResponseEntity.ok(rezultati);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<DijagnozaFakt>> dijagnostikuj(@RequestBody KorisnikOdgovori odgovori) {
+        return ResponseEntity.ok(diagnosticService.dijagnostikuj(odgovori));
     }
+
 }

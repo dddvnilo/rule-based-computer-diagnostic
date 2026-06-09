@@ -181,9 +181,8 @@ CEP-3: AKO ping > 5x baseline vrednosti u 3+ merenja tokom 5 minuta
 CEP-4: AKO napon_12V oscilira (gore-dole) u 5 uzastopnih merenja
        ONDA alarm = "Nestabilno napajanje - rizik od oštećenja komponenti"
 
-CEP-5: AKO temperatura_GPU raste linearno za 10°C+ tokom 15 minuta
-         BEZ povećanja GPU utilization-a
-       ONDA alarm = "Moguć začepljen ventilator ili istrošena termalna pasta GPU"
+CEP-5: AKO rpmCPUVentilator opada u svakom uzastopnom merenju tokom 5 uzastopnih merenja
+       ONDA alarm = "Ventilator CPU progresivno gubi brzinu - moguć kvar ležaja ili začepljenje"
 ```
 
 ## 4. Konkretan primer rezonovanja
@@ -228,10 +227,8 @@ R5: simptom_nestabilnost = TAČNO
 Simulator generiše podatke koji pokazuju da je temperatura CPU-a prešla 90°C pet puta u poslednjih 10 minuta:
 
 ```
-CEP-1 aktiviran -> nova cinjenica: alarm_pregrevanjae_CPU = TAČNO
+CEP-1 aktiviran -> alarm
 ```
-
-Ova cinjenia se dodaje u radnu memoriju i učestvuje u daljem rezonovanju.
 
 ### Korak 5 - Nivo 3: Ozbiljnost i preporuka
 

@@ -6,7 +6,9 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +32,9 @@ public class ServiceApplication {
 		KieFileSystem kfs = ks.newKieFileSystem();
 
 		KieModuleModel kieModuleModel = ks.newKieModuleModel();
-		KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel("DiagnosticsKBase").setDefault(true);
+		KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel("DiagnosticsKBase")
+				.setDefault(true)
+				.setEventProcessingMode(EventProcessingOption.STREAM);
 		kieBaseModel.newKieSessionModel("DiagnosticsKSession").setDefault(true);
 		kfs.writeKModuleXML(kieModuleModel.toXML());
 
@@ -40,6 +44,8 @@ public class ServiceApplication {
 				ks.getResources().newClassPathResource("rules/nivo2-manual.drl"));
 		kfs.write("src/main/resources/rules/nivo3-manual.drl",
 				ks.getResources().newClassPathResource("rules/nivo3-manual.drl"));
+		kfs.write("src/main/resources/rules/cep-pravila.drl",
+				ks.getResources().newClassPathResource("rules/cep-pravila.drl"));
 
 		generateFromTemplate(kfs, ks, "/rules/nivo1-boolean.drt", Nivo1BooleanTemplateData.getRows(), "nivo1-boolean-generated.drl");
 		generateFromTemplate(kfs, ks, "/rules/nivo1-numeric.drt", Nivo1NumericTemplateData.getRows(), "nivo1-numeric-generated.drl");
@@ -55,6 +61,11 @@ public class ServiceApplication {
 		}
 
 		return ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+	}
+
+	@Bean(destroyMethod = "dispose")
+	public KieSession cepKieSession(KieContainer kieContainer) {
+		return kieContainer.newKieSession("DiagnosticsKSession");
 	}
 
 	private void generateFromTemplate(KieFileSystem kfs, KieServices ks, String templatePath,
