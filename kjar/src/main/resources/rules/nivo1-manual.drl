@@ -1,14 +1,14 @@
 package com.ftn.sbnz.kjar;
 
-import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.KorisnikOdgovori;
 import com.ftn.sbnz.model.KomponentaFakt;
 import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
 
-// === BSOD kodovi - string poredjenje ne moze u uniformni template ===
+// String poredjenje bsodKod ne moze u uniformni template
 
 rule "Nivo1 - BSOD Memory Management"
     when
-        $s : SimptomFakt(bsod == true, bsodKod == "MEMORY_MANAGEMENT")
+        $s : KorisnikOdgovori(bsod == true, bsodKod == "MEMORY_MANAGEMENT")
         not KomponentaFakt(tipKomponente == TipKomponente.RAM)
     then
         insert(new KomponentaFakt(TipKomponente.RAM));
@@ -17,7 +17,7 @@ end
 
 rule "Nivo1 - BSOD IRQL Not Less Or Equal"
     when
-        $s : SimptomFakt(bsod == true, bsodKod == "IRQL_NOT_LESS_OR_EQUAL")
+        $s : KorisnikOdgovori(bsod == true, bsodKod == "IRQL_NOT_LESS_OR_EQUAL")
         not KomponentaFakt(tipKomponente == TipKomponente.OS)
     then
         insert(new KomponentaFakt(TipKomponente.OS));
@@ -26,7 +26,7 @@ end
 
 rule "Nivo1 - BSOD Page Fault - RAM"
     when
-        $s : SimptomFakt(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
+        $s : KorisnikOdgovori(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
         not KomponentaFakt(tipKomponente == TipKomponente.RAM)
     then
         insert(new KomponentaFakt(TipKomponente.RAM));
@@ -35,7 +35,7 @@ end
 
 rule "Nivo1 - BSOD Page Fault - Disk"
     when
-        $s : SimptomFakt(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
+        $s : KorisnikOdgovori(bsod == true, bsodKod == "PAGE_FAULT_IN_NONPAGED_AREA")
         not KomponentaFakt(tipKomponente == TipKomponente.DISK)
     then
         insert(new KomponentaFakt(TipKomponente.DISK));
@@ -44,7 +44,7 @@ end
 
 rule "Nivo1 - BSOD Kernel Security Check Failure"
     when
-        $s : SimptomFakt(bsod == true, bsodKod == "KERNEL_SECURITY_CHECK_FAILURE")
+        $s : KorisnikOdgovori(bsod == true, bsodKod == "KERNEL_SECURITY_CHECK_FAILURE")
         not KomponentaFakt(tipKomponente == TipKomponente.OS)
     then
         insert(new KomponentaFakt(TipKomponente.OS));

@@ -1,56 +1,36 @@
 package com.ftn.sbnz.model;
 
-public class SimptomFakt {
+public class MerenjeEvent {
 
-    // Temperatura
     private double temperaturaCPU;
     private double temperaturaGPU;
     private double temperaturaChipseta;
 
-    // Ventilatori (RPM)
     private int rpmCPUVentilator;
     private int rpmGPUVentilator;
     private int rpmCaseVentilator;
 
-    // RAM
     private int memtestGreske;
     private double ramZauzetost;
 
-    // Disk - SMART parametri
     private int smartReallocatedSectors;
     private int smartPendingSectors;
     private int smartUncorrectableErrors;
     private int diskPowerOnHours;
 
-    // PSU naponi
     private double napon12V;
     private double napon5V;
     private double napon3V3;
 
-    // CPU
     private double cpuUtilizacija;
 
-    // Mreža
     private double packetLoss;
     private double pingMs;
     private double mrezBrzinaMbps;
 
-    // OS
     private int eventLogGreske;
 
-    // Korisnicki simptomi
-    private boolean sporRad;
-    private boolean bsod;
-    private String bsodKod;
-    private boolean pregrevanje;
-    private boolean neobicniZvukovi;
-    private boolean ucestaliRestartovi;
-    private boolean zamrzavanje;
-    private boolean artefaktiNaEkranu;
-    private boolean problemiSaMrezom;
-    private boolean nestabilnostOS;
-
-    public SimptomFakt() {}
+    public MerenjeEvent() {}
 
     public double getTemperaturaCPU() { return temperaturaCPU; }
     public void setTemperaturaCPU(double temperaturaCPU) { this.temperaturaCPU = temperaturaCPU; }
@@ -111,34 +91,4 @@ public class SimptomFakt {
 
     public int getEventLogGreske() { return eventLogGreske; }
     public void setEventLogGreske(int eventLogGreske) { this.eventLogGreske = eventLogGreske; }
-
-    public boolean isSporRad() { return sporRad; }
-    public void setSporRad(boolean sporRad) { this.sporRad = sporRad; }
-
-    public boolean isBsod() { return bsod; }
-    public void setBsod(boolean bsod) { this.bsod = bsod; }
-
-    public String getBsodKod() { return bsodKod; }
-    public void setBsodKod(String bsodKod) { this.bsodKod = bsodKod; }
-
-    public boolean isPregrevanje() { return pregrevanje; }
-    public void setPregrevanje(boolean pregrevanje) { this.pregrevanje = pregrevanje; }
-
-    public boolean isNeobicniZvukovi() { return neobicniZvukovi; }
-    public void setNeobicniZvukovi(boolean neobicniZvukovi) { this.neobicniZvukovi = neobicniZvukovi; }
-
-    public boolean isUcestaliRestartovi() { return ucestaliRestartovi; }
-    public void setUcestaliRestartovi(boolean ucestaliRestartovi) { this.ucestaliRestartovi = ucestaliRestartovi; }
-
-    public boolean isZamrzavanje() { return zamrzavanje; }
-    public void setZamrzavanje(boolean zamrzavanje) { this.zamrzavanje = zamrzavanje; }
-
-    public boolean isArtefaktiNaEkranu() { return artefaktiNaEkranu; }
-    public void setArtefaktiNaEkranu(boolean artefaktiNaEkranu) { this.artefaktiNaEkranu = artefaktiNaEkranu; }
-
-    public boolean isProblemiSaMrezom() { return problemiSaMrezom; }
-    public void setProblemiSaMrezom(boolean problemiSaMrezom) { this.problemiSaMrezom = problemiSaMrezom; }
-
-    public boolean isNestabilnostOS() { return nestabilnostOS; }
-    public void setNestabilnostOS(boolean nestabilnostOS) { this.nestabilnostOS = nestabilnostOS; }
 }

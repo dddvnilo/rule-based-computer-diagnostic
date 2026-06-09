@@ -6,7 +6,7 @@ komponenta
 
 package com.ftn.sbnz.kjar;
 
-import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.MerenjeEvent;
 import com.ftn.sbnz.model.KomponentaFakt;
 import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
 
@@ -14,7 +14,7 @@ template "nivo1_range"
 
 rule "Nivo1 - @{atribut} @{min}-@{max} -> @{komponenta}"
     when
-        $s : SimptomFakt(@{atribut} > @{min}, @{atribut} < @{max})
+        $s : MerenjeEvent(@{atribut} > @{min}, @{atribut} < @{max})
         not KomponentaFakt(tipKomponente == TipKomponente.@{komponenta})
     then
         insert(new KomponentaFakt(TipKomponente.@{komponenta}));

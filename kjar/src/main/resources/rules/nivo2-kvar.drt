@@ -7,7 +7,7 @@ tipKvara
 
 package com.ftn.sbnz.kjar;
 
-import com.ftn.sbnz.model.SimptomFakt;
+import com.ftn.sbnz.model.MerenjeEvent;
 import com.ftn.sbnz.model.KomponentaFakt;
 import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
 import com.ftn.sbnz.model.KvarFakt;
@@ -18,7 +18,7 @@ template "nivo2_kvar"
 rule "Nivo2 - @{komponenta} @{atribut} @{tipKvara}"
     when
         $komp : KomponentaFakt(tipKomponente == TipKomponente.@{komponenta})
-        $s : SimptomFakt(@{atribut} @{operator} @{prag})
+        $s : MerenjeEvent(@{atribut} @{operator} @{prag})
         not KvarFakt(tipKvara == TipKvara.@{tipKvara}, komponenta == $komp)
     then
         insert(new KvarFakt(TipKvara.@{tipKvara}, $komp));
