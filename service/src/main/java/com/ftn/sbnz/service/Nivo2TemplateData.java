@@ -19,6 +19,7 @@ public class Nivo2TemplateData {
         rows.add(row("GPU",         "temperaturaGPU",            ">",  "95",    "PREGREVANJE_GPU"));
         // RAM
         rows.add(row("RAM",         "memtestGreske",             ">",  "0",     "FIZICKI_KVAR_RAM"));
+        rows.add(row("RAM",         "ramZauzetost",              ">",  "85",    "PREOPTERECENJE_RAM"));
         // Disk
         rows.add(row("DISK",        "smartReallocatedSectors",   ">",  "0",     "LOSI_SEKTORI_DISK"));
         rows.add(row("DISK",        "smartPendingSectors",       ">",  "0",     "LOSI_SEKTORI_DISK"));

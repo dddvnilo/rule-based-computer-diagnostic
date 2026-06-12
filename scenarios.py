@@ -135,6 +135,9 @@ scenarios = [
 
     ("Scenario 30: Pregrevanje chipseta - NE sme da okine VRM (restartovi + visoka temp chipseta)",
         {**prazan(), "temperaturaChipseta": 92.0, "ucestaliRestartovi": True}),
+
+    ("Scenario 31: Preopterecenje RAM (zauzetost 92%, bez memtest gresaka)",
+        {**prazan(), "ramZauzetost": 92.0, "sporRad": True}),
 ]
 
 for naziv, scenario in scenarios:

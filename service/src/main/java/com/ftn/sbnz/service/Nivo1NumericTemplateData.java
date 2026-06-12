@@ -23,6 +23,8 @@ public class Nivo1NumericTemplateData {
         rows.add(row("smartPendingSectors",      ">",  "0",     "DISK"));
         rows.add(row("smartUncorrectableErrors", ">",  "0",     "DISK"));
         rows.add(row("diskPowerOnHours",         ">",  "30000", "DISK"));
+        // RAM
+        rows.add(row("ramZauzetost",              ">",  "85",    "RAM"));
         // PSU
         rows.add(row("napon12V",                 "<",  "11.4",  "PSU"));
         rows.add(row("napon5V",                  "<",  "4.75",  "PSU"));

@@ -20,6 +20,7 @@ public class Nivo3TemplateData {
         rows.add(row("VRAM_KVAR",                "KRITICNO",   "Artefakti bez pregrevanja ukazuju na kvar VRAM memorije. Zameniti graficku karticu."));
         // RAM
         rows.add(row("FIZICKI_KVAR_RAM",         "KRITICNO",   "Zameniti RAM modul. Do tada izbegavati upotrebu racunara."));
+        rows.add(row("PREOPTERECENJE_RAM",        "INFO",       "Visoka zauzetost RAM memorije. Zatvoriti nepotrebne programe ili razmotriti nadogradnju."));
         // Disk
         rows.add(row("LOSI_SEKTORI_DISK",        "KRITICNO",   "Odmah napraviti backup podataka. Disk pokazuje znakove fizickog kvara."));
         rows.add(row("ISTROSENOST_DISKA",        "INFO",       "Disk ima veliki broj radnih sati. Planirati zamenu i redovno praviti backup."));

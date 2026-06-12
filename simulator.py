@@ -18,7 +18,7 @@ import requests
 
 BASE_URL = "http://localhost:8080"
 
-DOSTUPNE_KOMPONENTE = ["cpu", "gpu", "hladjenje", "disk", "psu", "mreza", "os", "maticna"]
+DOSTUPNE_KOMPONENTE = ["cpu", "gpu", "hladjenje", "ram", "disk", "psu", "mreza", "os", "maticna"]
 
 # ---------------------------------------------------------------------------
 # Normalni generatori
@@ -69,6 +69,12 @@ def mreza_normalno():
 def os_normalno():
     return {
         "eventLogGreske": random.choices([0, 0, 0, 0, 1], k=1)[0],
+    }
+
+def ram_normalno():
+    return {
+        "memtestGreske": 0,
+        "ramZauzetost":  round(random.uniform(30.0, 65.0), 1),
     }
 
 def maticna_normalno():
@@ -149,6 +155,13 @@ def os_kvar():
         "eventLogGreske": random.randint(6, 15),
     }
 
+def ram_kvar():
+    # ramZauzetost > 85 -> nivo1 RAM + nivo2 PREOPTERECENJE_RAM -> INFO
+    return {
+        "memtestGreske": 0,
+        "ramZauzetost":  round(random.uniform(88.0, 98.0), 1),
+    }
+
 def maticna_kvar():
     # temperaturaChipseta > 85 -> nivo1 MOTHERBOARD
     return {
@@ -163,6 +176,7 @@ GENERATORI = {
     "cpu":      {"normalno": cpu_normalno,      "kvar": cpu_kvar},
     "gpu":      {"normalno": gpu_normalno,       "kvar": gpu_kvar},
     "hladjenje":{"normalno": hladjenje_normalno, "kvar": hladjenje_kvar},
+    "ram":      {"normalno": ram_normalno,       "kvar": ram_kvar},
     "disk":     {"normalno": disk_normalno,      "kvar": disk_kvar},
     "psu":      {"normalno": psu_normalno,       "kvar": psu_kvar},
     "mreza":    {"normalno": mreza_normalno,      "kvar": mreza_kvar},

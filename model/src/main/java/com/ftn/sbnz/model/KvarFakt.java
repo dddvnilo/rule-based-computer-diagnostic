@@ -14,6 +14,7 @@ public class KvarFakt {
         VRAM_KVAR,
         // RAM
         FIZICKI_KVAR_RAM,
+        PREOPTERECENJE_RAM,
         // Disk
         LOSI_SEKTORI_DISK,
         ISTROSENOST_DISKA,
