@@ -81,15 +81,15 @@ def maticna_normalno():
 # ---------------------------------------------------------------------------
 
 def cpu_kvar():
-    # temperaturaCPU > 90 → nivo1 (CPU, COOLING) + CEP-1 nakon 3 merenja
+    # temperaturaCPU > 90 -> nivo1 (CPU, COOLING) + CEP-1 nakon 3 merenja
     return {
         "temperaturaCPU": round(random.uniform(91.0, 98.0), 1),
         "cpuUtilizacija":  round(random.uniform(80.0, 99.0), 1),
     }
 
 def gpu_kvar():
-    # temperaturaGPU > 90 → nivo1 GPU
-    # rpmGPUVentilator < 300 → nivo1 range (GPU, COOLING)
+    # temperaturaGPU > 90 -> nivo1 GPU
+    # rpmGPUVentilator < 300 -> nivo1 range (GPU, COOLING)
     return {
         "temperaturaGPU":   round(random.uniform(91.0, 96.0), 1),
         "rpmGPUVentilator": random.randint(50, 200),
@@ -99,8 +99,8 @@ def gpu_kvar():
 _cpu_fan_rpm = 1400
 
 def hladjenje_kvar():
-    # rpmCaseVentilator < 200 → nivo1 range (COOLING)
-    # rpmCPUVentilator progresivno pada → CEP-5 nakon 5 uzastopnih merenja
+    # rpmCaseVentilator < 200 -> nivo1 range (COOLING)
+    # rpmCPUVentilator progresivno pada -> CEP-5 nakon 5 uzastopnih merenja
     global _cpu_fan_rpm
     _cpu_fan_rpm = max(200, _cpu_fan_rpm - random.randint(60, 110))
     return {
@@ -111,7 +111,7 @@ def hladjenje_kvar():
     }
 
 def disk_kvar():
-    # smartReallocatedSectors/pendingSectors/uncorrectableErrors > 0 → nivo1 DISK + CEP-2 nakon 5 merenja
+    # smartReallocatedSectors/pendingSectors/uncorrectableErrors > 0 -> nivo1 DISK + CEP-2 nakon 5 merenja
     return {
         "smartReallocatedSectors":  random.randint(1, 5),
         "smartPendingSectors":       random.randint(0, 3),
@@ -123,8 +123,8 @@ def disk_kvar():
 _psu_toggle = False
 
 def psu_kvar():
-    # Alternira 12.1V / 12.9V → raspon 0.8V > 0.6V → CEP-4 nakon 5 merenja u 5min
-    # napon12V < 11.4 → nivo1 PSU (jednom u svakih N ciklusa)
+    # Alternira 12.1V / 12.9V -> raspon 0.8V > 0.6V -> CEP-4 nakon 5 merenja u 5min
+    # napon12V < 11.4 -> nivo1 PSU (jednom u svakih N ciklusa)
     global _psu_toggle
     _psu_toggle = not _psu_toggle
     napon = 12.9 if _psu_toggle else 12.1
@@ -135,8 +135,8 @@ def psu_kvar():
     }
 
 def mreza_kvar():
-    # pingMs > 200 → CEP-3 nakon 3 merenja u 5min
-    # packetLoss > 10, mrezBrzinaMbps < 100 → nivo1 NETWORK
+    # pingMs > 200 -> CEP-3 nakon 3 merenja u 5min
+    # packetLoss > 10, mrezBrzinaMbps < 100 -> nivo1 NETWORK
     return {
         "packetLoss":     round(random.uniform(12.0, 30.0), 1),
         "pingMs":         round(random.uniform(220.0, 480.0), 1),
@@ -144,13 +144,13 @@ def mreza_kvar():
     }
 
 def os_kvar():
-    # eventLogGreske > 5 → nivo1 OS
+    # eventLogGreske > 5 -> nivo1 OS
     return {
         "eventLogGreske": random.randint(6, 15),
     }
 
 def maticna_kvar():
-    # temperaturaChipseta > 85 → nivo1 MOTHERBOARD
+    # temperaturaChipseta > 85 -> nivo1 MOTHERBOARD
     return {
         "temperaturaChipseta": round(random.uniform(86.0, 92.0), 1),
     }

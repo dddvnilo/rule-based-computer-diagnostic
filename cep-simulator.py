@@ -57,7 +57,7 @@ SCENARIJI = {
         "naziv":    "CEP-1: Ponavljajuce pregrevanje CPU",
         "opis":     "Salje 3 merenja sa temperaturaCPU > 90 C u prozoru od 10 minuta.",
         "napomena": None,
-        "interval": 30,
+        "interval": 5,
         "merenja": [
             {**baza(), "temperaturaCPU": 93.0},
             {**baza(), "temperaturaCPU": 96.0},
@@ -68,7 +68,7 @@ SCENARIJI = {
         "naziv":    "CEP-2: Ucestale SMART greske diska",
         "opis":     "Salje 5 merenja sa SMART greskama u prozoru od 24h.",
         "napomena": "Vremenski prozor je 24h - alarm ce biti aktiviran ako se sva merenja posalju unutar tog perioda.",
-        "interval": 10,
+        "interval": 5,
         "merenja": [
             {**baza(), "smartReallocatedSectors": 1},
             {**baza(), "smartPendingSectors":      2},
@@ -81,7 +81,7 @@ SCENARIJI = {
         "naziv":    "CEP-3: Nestabilan ping",
         "opis":     "Salje 3 merenja sa pingMs > 200 ms u prozoru od 5 minuta.",
         "napomena": None,
-        "interval": 20,
+        "interval": 5,
         "merenja": [
             {**baza(), "pingMs": 350.0},
             {**baza(), "pingMs": 420.0},
