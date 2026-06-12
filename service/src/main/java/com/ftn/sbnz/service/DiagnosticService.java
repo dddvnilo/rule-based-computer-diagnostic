@@ -65,9 +65,6 @@ public class DiagnosticService {
             return dijagnoze;
         } finally {
             session.dispose();
-            // Korisnik je pokrenuo dijagnozu - CEP alarmi se resetuju za sledeci ciklus
-            cepKieSession.getFactHandles(new ClassObjectFilter(CepAlarmFakt.class))
-                    .forEach(cepKieSession::delete);
         }
     }
 }
