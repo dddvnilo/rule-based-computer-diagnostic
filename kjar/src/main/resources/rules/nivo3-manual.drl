@@ -5,6 +5,46 @@ import com.ftn.sbnz.model.KvarFakt;
 import com.ftn.sbnz.model.KvarFakt.TipKvara;
 import com.ftn.sbnz.model.DijagnozaFakt;
 import com.ftn.sbnz.model.DijagnozaFakt.Ozbiljnost;
+import com.ftn.sbnz.model.CepAlarmFakt;
+
+// salience 5: eskalaciona pravila okidaju pre nivo3 template pravila (salience 0)
+// kad eskalacija ubaci DijagnozaFakt, template pravilo vidi "not DijagnozaFakt(kvar == $k)" = false i ne okida
+
+rule "Nivo3 - Eskalacija: termalna pasta + CEP1 (ponavljajuce pregrevanje CPU)"
+    salience 5
+    when
+        $k : KvarFakt(tipKvara == TipKvara.ISTROSENA_TERMALNA_PASTA)
+        CepAlarmFakt(tip == "CEP1_CPU_TEMP")
+        not DijagnozaFakt(kvar == $k)
+    then
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO,
+            "Termalna pasta kriticno istrosena - CPU je vec ponavljajuce pregrevao. Odmah zameniti termalne paste i proveriti hladjenje."));
+        System.out.println("Nivo 3 (eskalacija): ISTROSENA_TERMALNA_PASTA -> KRITICNO zbog CEP1");
+end
+
+rule "Nivo3 - Eskalacija: kvar ventilatora + CEP5 (progresivni pad RPM)"
+    salience 5
+    when
+        $k : KvarFakt(tipKvara == TipKvara.KVAR_VENTILATORA)
+        CepAlarmFakt(tip == "CEP5_RPM_PAD")
+        not DijagnozaFakt(kvar == $k)
+    then
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO,
+            "Ventilator progresivno gubi brzinu - istroseni lezaj detektovan. Odmah iskljuciti racunar i zameniti ventilator pre potpunog otkaza."));
+        System.out.println("Nivo 3 (eskalacija): KVAR_VENTILATORA -> KRITICNO zbog CEP5");
+end
+
+rule "Nivo3 - Eskalacija: losi sektori + CEP2 (ucestale SMART greske)"
+    salience 5
+    when
+        $k : KvarFakt(tipKvara == TipKvara.LOSI_SEKTORI_DISK)
+        CepAlarmFakt(tip == "CEP2_SMART_DISK")
+        not DijagnozaFakt(kvar == $k)
+    then
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO,
+            "Disk aktivno propada - SMART greske se ponavljaju. Odmah napraviti backup i zameniti disk pre potpunog otkaza."));
+        System.out.println("Nivo 3 (eskalacija): LOSI_SEKTORI_DISK -> KRITICNO zbog CEP2");
+end
 
 // salience 10 osigurava da ovo pravilo puca pre template pravila za NESTABILAN_NAPON
 rule "Nivo3 - PSU root cause visestrukih kvarova"

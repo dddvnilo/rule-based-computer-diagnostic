@@ -55,6 +55,8 @@ public class DiagnosticService {
                 session.insert(latestMerenje);
             }
             session.insert(odgovori);
+            cepKieSession.getObjects(new ClassObjectFilter(CepAlarmFakt.class))
+                    .forEach(session::insert);
             session.fireAllRules(match -> !match.getRule().getName().startsWith("CEP-"));
 
             List<DijagnozaFakt> dijagnoze = new ArrayList<>();
