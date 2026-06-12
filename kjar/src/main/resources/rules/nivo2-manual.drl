@@ -7,6 +7,52 @@ import com.ftn.sbnz.model.KomponentaFakt.TipKomponente;
 import com.ftn.sbnz.model.KvarFakt;
 import com.ftn.sbnz.model.KvarFakt.TipKvara;
 
+// KVAR_VENTILATORA koristimo range uslov (100-500 RPM) da se ne preklapa sa VENTILATOR_STAO (< 100)
+rule "Nivo2 - COOLING kvar CPU ventilatora (degradiran)"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+        MerenjeEvent(rpmCPUVentilator >= 100, rpmCPUVentilator < 500)
+        not KvarFakt(tipKvara == TipKvara.KVAR_VENTILATORA, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.KVAR_VENTILATORA, $komp));
+        System.out.println("Nivo 2 (manual): KVAR_VENTILATORA (CPU ventilator)");
+end
+
+rule "Nivo2 - COOLING kvar case ventilatora (degradiran)"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.COOLING)
+        MerenjeEvent(rpmCaseVentilator >= 50, rpmCaseVentilator < 200)
+        not KvarFakt(tipKvara == TipKvara.KVAR_VENTILATORA, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.KVAR_VENTILATORA, $komp));
+        System.out.println("Nivo 2 (manual): KVAR_VENTILATORA (case ventilator)");
+end
+
+rule "Nivo2 - GPU kvar ventilatora (degradiran)"
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.GPU)
+        MerenjeEvent(rpmGPUVentilator >= 100, rpmGPUVentilator < 300)
+        not KvarFakt(tipKvara == TipKvara.KVAR_VENTILATORA, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.KVAR_VENTILATORA, $komp));
+        System.out.println("Nivo 2 (manual): KVAR_VENTILATORA (GPU ventilator)");
+end
+
+// VRM kvar: restartovi postoje, ali PSU napon je uredan -> uzrok je na MB (VRM)
+// salience -1: okida posle template pravila, da PREGREVANJE_CHIPSETA vec bude u memoriji ako postoji
+rule "Nivo2 - VRM kvar maticne ploce"
+    salience -1
+    when
+        $komp : KomponentaFakt(tipKomponente == TipKomponente.MOTHERBOARD)
+        KorisnikOdgovori(ucestaliRestartovi == true)
+        MerenjeEvent(napon12V >= 11.4, napon5V >= 4.75, napon3V3 >= 3.1)
+        not KvarFakt(tipKvara == TipKvara.PREGREVANJE_CHIPSETA)
+        not KvarFakt(tipKvara == TipKvara.VRM_KVAR, komponenta == $komp)
+    then
+        insert(new KvarFakt(TipKvara.VRM_KVAR, $komp));
+        System.out.println("Nivo 2 (manual): VRM_KVAR - restartovi bez PSU problema i bez pregrevanja chipseta");
+end
+
 // Zahteva dva istovremena uslova: ventilator radi (RPM ok) ali temperatura visoka -> pasta
 rule "Nivo2 - Istrosena termalna pasta"
     when

@@ -8,10 +8,10 @@ declare MerenjeEvent
     @expires(24h)
 end
 
-// CepAlarmFakt istice nakon 5 minuta - automatski cooldown izmedju ponovljenih alarma istog tipa
+// CepAlarmFakt istice nakon 1 minut - automatski cooldown izmedju ponovljenih alarma istog tipa
 declare CepAlarmFakt
     @role(event)
-    @expires(10s)
+    @expires(1m)
 end
 
 // CEP-1: temperatura CPU > 90C se pojavi 3+ puta u roku od 10 minuta

@@ -10,11 +10,12 @@ public class Nivo2TemplateData {
     public static List<Map<String, Object>> getRows() {
         List<Map<String, Object>> rows = new ArrayList<>();
 
-        // Cooling
-        rows.add(row("COOLING",     "rpmCPUVentilator",          "<",  "500",   "KVAR_VENTILATORA"));
-        rows.add(row("COOLING",     "rpmCaseVentilator",         "<",  "200",   "KVAR_VENTILATORA"));
+        // Cooling - KVAR_VENTILATORA je u nivo2-manual.drl (zahteva range uslov)
+        // Cooling - VENTILATOR_STAO (fan prakticno stao)
+        rows.add(row("COOLING",     "rpmCPUVentilator",          "<",  "100",   "VENTILATOR_STAO"));
+        rows.add(row("COOLING",     "rpmCaseVentilator",         "<",  "50",    "VENTILATOR_STAO"));
         // GPU
-        rows.add(row("GPU",         "rpmGPUVentilator",          "<",  "300",   "KVAR_VENTILATORA"));
+        rows.add(row("GPU",         "rpmGPUVentilator",          "<",  "100",   "VENTILATOR_STAO"));
         rows.add(row("GPU",         "temperaturaGPU",            ">",  "95",    "PREGREVANJE_GPU"));
         // RAM
         rows.add(row("RAM",         "memtestGreske",             ">",  "0",     "FIZICKI_KVAR_RAM"));

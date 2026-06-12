@@ -120,6 +120,21 @@ scenarios = [
 
     ("Scenario 25: BSOD KERNEL_SECURITY_CHECK_FAILURE - OS corrupt",
         {**prazan(), "bsod": True, "bsodKod": "KERNEL_SECURITY_CHECK_FAILURE"}),
+
+    ("Scenario 26: Ventilator CPU stao (RPM = 0)",
+        {**prazan(), "rpmCPUVentilator": 0}),
+
+    ("Scenario 27: Ventilator GPU stao (RPM = 30)",
+        {**prazan(), "rpmGPUVentilator": 30, "temperaturaGPU": 85.0}),
+
+    ("Scenario 28: Ventilator case stao (RPM = 20)",
+        {**prazan(), "rpmCaseVentilator": 20}),
+
+    ("Scenario 29: VRM kvar maticne ploce (restartovi, PSU napon uredan)",
+        {**prazan(), "ucestaliRestartovi": True}),
+
+    ("Scenario 30: Pregrevanje chipseta - NE sme da okine VRM (restartovi + visoka temp chipseta)",
+        {**prazan(), "temperaturaChipseta": 92.0, "ucestaliRestartovi": True}),
 ]
 
 for naziv, scenario in scenarios:

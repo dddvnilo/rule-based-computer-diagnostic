@@ -5,6 +5,7 @@ public class KvarFakt {
     public enum TipKvara {
         // Cooling
         KVAR_VENTILATORA,
+        VENTILATOR_STAO,
         ISTROSENA_TERMALNA_PASTA,
         // CPU
         PREGREVANJE_CPU,
@@ -20,6 +21,7 @@ public class KvarFakt {
         NESTABILAN_NAPON,
         // Motherboard
         PREGREVANJE_CHIPSETA,
+        VRM_KVAR,
         // Network
         DRIVER_KONFLIKT,
         FIZICKI_KVAR_MREZE,

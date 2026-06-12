@@ -11,6 +11,7 @@ public class Nivo1NumericTemplateData {
         List<Map<String, Object>> rows = new ArrayList<>();
 
         // CPU
+        rows.add(row("rpmCPUVentilator",          "<",  "500",   "COOLING"));
         rows.add(row("temperaturaCPU",           ">",  "90",    "COOLING"));
         rows.add(row("temperaturaCPU",           ">",  "90",    "CPU"));
         // GPU

@@ -79,9 +79,9 @@ Svaka od 9 komponenti modelovana je kao templejt koji sadrži relevantne atribut
 | **CPU** | temperatura, utilization % | pregrevanje |
 | **GPU** | temperatura, fan speed (RPM) | pregrevanje, VRAM kvar |
 | **RAM** | zauzetost %, memtest greške | fizički kvar ćelija |
-| **Disk** | SMART parametri, temperatura, power-on hours | fizički kvar, loši sektori, istrošenost |
+| **Disk** | SMART parametri, temperatura, power-on hours | loši sektori, istrošenost |
 | **PSU** | napon po linijama (+12V, +5V, +3.3V), wattage | nestabilan napon |
-| **Motherboard** | temperatura chipseta, POST kodovi, VRM status | loši kondenzatori, VRM kvar, BIOS problem |
+| **Motherboard** | temperatura chipseta, POST kodovi, VRM status | pregrevanje chipset-a, VRM kvar |
 | **Cooling system** | RPM po ventilatorima, broj ventilatora, case temperatura | istrošen ležaj, ventilator stao |
 | **Network** | packet loss %, ping, brzina konekcije | driver konflikt, fizički kvar čipa |
 | **OS/Softver** | event log greške | zastareli drajveri, corrupt fajlovi |
