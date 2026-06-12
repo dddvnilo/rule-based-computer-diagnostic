@@ -10,6 +10,7 @@ public class Nivo1BooleanTemplateData {
     public static List<Map<String, Object>> getRows() {
         List<Map<String, Object>> rows = new ArrayList<>();
 
+        rows.add(row("bsod",               "OS"));
         rows.add(row("neobicniZvukovi",    "COOLING"));
         rows.add(row("pregrevanje",        "COOLING"));
         rows.add(row("pregrevanje",        "CPU"));
