@@ -47,12 +47,12 @@ Sistem prihvata dve vrste ulaza:
 - Nestabilnost OS-a (crashevi programa, spor boot)
 
 **Hardverski podaci prikupljeni iz simulatora:**
-- Temperatura CPU-a i GPU-a (°C) pri idle i load stanju
+- Temperature CPU-a i GPU-a (°C)
 - Procenat zauzetosti RAM-a i greške iz memtest alata
 - SMART parametri diska: reallocated sectors, pending sectors, uncorrectable errors, power-on hours
 - Napon napajanja na +12V, +5V i +3.3V
 - Brzina ventilatora po komponentama (RPM): CPU, GPU, case
-- Temperatura chipseta matične ploče i POST status kodovi
+- Temperatura chipseta matične ploče
 - Windows Event Log greške i BSOD dump kodovi
 - Mrežne metrike: packet loss %, ping stabilnost, brzina
 
@@ -82,7 +82,7 @@ Svaka od 9 komponenti modelovana je kao templejt koji sadrži relevantne atribut
 | **Disk** | SMART parametri, power-on hours | loši sektori, istrošenost |
 | **PSU** | napon po linijama (+12V, +5V, +3.3V) | nestabilan napon |
 | **Motherboard** | temperatura chipseta, VRM status | pregrevanje chipset-a, VRM kvar |
-| **Cooling system** | RPM po ventilatorima, broj ventilatora, case temperatura | istrošen ležaj, ventilator stao |
+| **Cooling system** | RPM po ventilatorima, broj ventilatora | istrošen ležaj, ventilator stao |
 | **Network** | packet loss %, ping, brzina konekcije | driver konflikt, fizički kvar čipa |
 | **OS/Softver** | event log greške | zastareli drajveri, corrupt fajlovi |
 
@@ -92,7 +92,7 @@ Pravila su organizovana u 3 nivoa ulančavanja:
 
 - **Nivo 1** - Sirovi podaci i simptomi -> identifikacija relevantnih komponenti. Na osnovu odabranih simptoma i vrednosti iz simulatora, sistem mapira svaki simptom na jednu ili više komponenti koje su potencijalni uzrok (npr. artefakti na ekranu -> GPU, BSOD kod MEMORY_MANAGEMENT -> RAM).
 - **Nivo 2** - Komponenta + atributi -> tip kvara. Kada je komponenta identifikovana, sistem gleda njene konkretne atribute iz templejta i određuje tip kvara (npr. sumnja na Cooling system + RPM < 500 -> tip = kvar ventilatora; RPM normalan ali temperatura visoka -> tip = istrošena termalna pasta).
-- **Nivo 3** - Tip kvara -> ozbiljnost i preporuka. Tip kvara direktno određuje nivo ozbiljnosti i konkretnu preporuku za akciju. Ozbiljnost može biti fiksna (npr. fizički kvar RAM-a -> uvek KRITIČNO) ili zavisna od vrednosti (npr. pregrevanje GPU -> UPOZORENJE pri 85°C, KRITIČNO pri 100°C+). Kao finalni nivo ozbiljnosti uzima se najgori među svim detektovanim kvarovima.
+- **Nivo 3** - Tip kvara -> ozbiljnost i preporuka. Tip kvara direktno određuje nivo ozbiljnosti i konkretnu preporuku za akciju. Ozbiljnost može biti fiksna (npr. fizički kvar RAM-a -> uvek KRITIČNO) ili zavisna od vrednosti (npr. pregrevanje GPU -> UPOZORENJE pri 85°C, KRITIČNO pri 100°C+).
 
 #### CEP pravila
 
@@ -175,7 +175,7 @@ CEP-1: AKO temperatura_CPU > 90°C se pojavi 3+ puta u roku od 10 minuta
 CEP-2: AKO SMART greška na disku zabeležena 5+ puta u toku jednog dana
        ONDA alarm = "Disk pokazuje znakove skorog otkaza"
 
-CEP-3: AKO ping > 5x baseline vrednosti u 3+ merenja tokom 5 minuta
+CEP-3: AKO ping > 200ms u 3+ merenja tokom 5 minuta
        ONDA alarm = "Nestabilan network adapter - detektovane nagle oscilacije latencije"
 
 CEP-4: AKO napon_12V oscilira (gore-dole) u 5 uzastopnih merenja

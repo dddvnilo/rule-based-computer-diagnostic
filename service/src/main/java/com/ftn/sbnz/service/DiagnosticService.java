@@ -46,7 +46,7 @@ public class DiagnosticService {
                 .forEach(alarm -> messagingTemplate.convertAndSend("/topic/alarmi", alarm));
     }
 
-    // --- Dijagnoza: request-based, izolована sesija ---
+    // --- Dijagnoza: request-based sesija ---
 
     public synchronized List<DijagnozaFakt> dijagnostikuj(KorisnikOdgovori odgovori) {
         KieSession session = kieContainer.newKieSession();
