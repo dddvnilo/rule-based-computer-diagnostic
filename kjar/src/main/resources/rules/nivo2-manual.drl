@@ -65,25 +65,29 @@ rule "Nivo2 - Istrosena termalna pasta"
 end
 
 // String poredjenje bsodKod ne moze u uniformni template
+// Sam BSOD kod nije dovoljan dokaz - zahteva se i merljiv trag u Event Log-u
 rule "Nivo2 - BSOD driver kvar OS"
     when
         $komp : KomponentaFakt(tipKomponente == TipKomponente.OS)
         $k : KorisnikOdgovori(bsod == true, bsodKod == "IRQL_NOT_LESS_OR_EQUAL")
+        MerenjeEvent(eventLogGreske > 0)
         not KvarFakt(tipKvara == TipKvara.ZASTARELI_DRAJVERI, komponenta == $komp)
     then
         insert(new KvarFakt(TipKvara.ZASTARELI_DRAJVERI, $komp));
-        System.out.println("Nivo 2 (manual): ZASTARELI_DRAJVERI via BSOD IRQL");
+        System.out.println("Nivo 2 (manual): ZASTARELI_DRAJVERI via BSOD IRQL + Event Log greske");
 end
 
 // String poredjenje bsodKod ne moze u uniformni template
+// Sam BSOD kod nije dovoljan dokaz - zahteva se i merljiv trag u Event Log-u
 rule "Nivo2 - BSOD kernel kvar OS"
     when
         $komp : KomponentaFakt(tipKomponente == TipKomponente.OS)
         $k : KorisnikOdgovori(bsod == true, bsodKod == "KERNEL_SECURITY_CHECK_FAILURE")
+        MerenjeEvent(eventLogGreske > 0)
         not KvarFakt(tipKvara == TipKvara.CORRUPT_FAJLOVI, komponenta == $komp)
     then
         insert(new KvarFakt(TipKvara.CORRUPT_FAJLOVI, $komp));
-        System.out.println("Nivo 2 (manual): CORRUPT_FAJLOVI via BSOD KERNEL");
+        System.out.println("Nivo 2 (manual): CORRUPT_FAJLOVI via BSOD KERNEL + Event Log greske");
 end
 
 // Zahteva oba fakta: artefakti (korisnik) + normalna temperatura GPU (merenje)

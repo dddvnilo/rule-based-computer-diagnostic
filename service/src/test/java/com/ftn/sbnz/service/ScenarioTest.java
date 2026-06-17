@@ -256,9 +256,9 @@ class ScenarioTest {
     // Scenario 6: GPU VRAM kvar — artefakti bez pregrevanja
 
     @Test
-    void scenario_vram_kvar_artefakti_bez_pregrevanja() {
-        // GPU radi na normalnoj temperaturi (72C), ali postoje vizuelni artefakti
-        // Artefakti uz normalnu temperaturu ukazuju na kvar VRAM memorije, ne na pregrevanje
+    void scenario_vram_kvar_samo_artefakti_je_upozorenje() {
+        // GPU radi na normalnoj temperaturi (72C), korisnik prijavljuje SAMO artefakte
+        // Bez potkrepljujuceg simptoma (zamrzavanje/nestabilnost) - VRAM_KVAR ostaje UPOZORENJE, ne KRITICNO
         MerenjeEvent m = normalMerenje();
         m.setTemperaturaGPU(72);
 
@@ -276,11 +276,37 @@ class ScenarioTest {
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("VRAM_KVAR nije dijagnostikovan"));
 
-        assertEquals(Ozbiljnost.KRITICNO, vramDijagnoza.getOzbiljnost());
+        assertEquals(Ozbiljnost.UPOZORENJE, vramDijagnoza.getOzbiljnost(),
+                "Sami artefakti bez drugog simptoma ne smeju odmah dati KRITICNO");
 
         // PREGREVANJE_GPU ne sme biti prisutno — GPU temperatura je normalna (72C < 90C)
         assertTrue(rezultat.stream()
                 .noneMatch(d -> d.getKvar().getTipKvara() == TipKvara.PREGREVANJE_GPU),
                 "PREGREVANJE_GPU ne sme biti dijagnostikovan pri normalnoj GPU temperaturi (72 stepen)");
+    }
+
+    @Test
+    void scenario_vram_kvar_sa_zamrzavanjem_je_kriticno() {
+        // Artefakti + zamrzavanje sistema - dodatni simptom potvrdjuje VRAM kvar -> KRITICNO
+        MerenjeEvent m = normalMerenje();
+        m.setTemperaturaGPU(72);
+
+        KorisnikOdgovori o = new KorisnikOdgovori();
+        o.setArtefaktiNaEkranu(true);
+        o.setZamrzavanje(true);
+
+        session.insert(m);
+        session.insert(o);
+        fire();
+
+        List<DijagnozaFakt> rezultat = dijagnoze();
+
+        DijagnozaFakt vramDijagnoza = rezultat.stream()
+                .filter(d -> d.getKvar().getTipKvara() == TipKvara.VRAM_KVAR)
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("VRAM_KVAR nije dijagnostikovan"));
+
+        assertEquals(Ozbiljnost.KRITICNO, vramDijagnoza.getOzbiljnost(),
+                "Artefakti uz zamrzavanje treba da potvrde VRAM kvar kao KRITICNO");
     }
 }

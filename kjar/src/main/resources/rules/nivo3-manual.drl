@@ -1,6 +1,7 @@
 package com.ftn.sbnz.kjar;
 
 import com.ftn.sbnz.model.MerenjeEvent;
+import com.ftn.sbnz.model.KorisnikOdgovori;
 import com.ftn.sbnz.model.KvarFakt;
 import com.ftn.sbnz.model.KvarFakt.TipKvara;
 import com.ftn.sbnz.model.DijagnozaFakt;
@@ -79,4 +80,28 @@ rule "Nivo3 - Dijagnoza pregrevanje GPU upozorenje"
     then
         insert(new DijagnozaFakt($k, Ozbiljnost.UPOZORENJE, "Pratiti temperaturu GPU-a. Proveriti ventilaciju kucista."));
         System.out.println("Nivo 3 (manual): UPOZORENJE - PREGREVANJE_GPU");
+end
+
+// Artefakti uz zamrzavanje/nestabilnost OS-a su jaca potvrda VRAM kvara - tek tada KRITICNO
+rule "Nivo3 - Dijagnoza VRAM kvar kriticno (potvrdjeno dodatnim simptomom)"
+    when
+        $k : KvarFakt(tipKvara == TipKvara.VRAM_KVAR)
+        KorisnikOdgovori(zamrzavanje == true || nestabilnostOS == true)
+        not DijagnozaFakt(kvar == $k)
+    then
+        insert(new DijagnozaFakt($k, Ozbiljnost.KRITICNO,
+            "Artefakti uz zamrzavanje/nestabilnost sistema potvrdjuju kvar VRAM memorije. Zameniti graficku karticu."));
+        System.out.println("Nivo 3 (manual): KRITICNO - VRAM_KVAR (potvrdjeno)");
+end
+
+// Sami artefakti bez drugog simptoma nisu dovoljni za kriticnu dijagnozu
+rule "Nivo3 - Dijagnoza VRAM kvar upozorenje (samo artefakti)"
+    when
+        $k : KvarFakt(tipKvara == TipKvara.VRAM_KVAR)
+        KorisnikOdgovori(zamrzavanje == false && nestabilnostOS == false)
+        not DijagnozaFakt(kvar == $k)
+    then
+        insert(new DijagnozaFakt($k, Ozbiljnost.UPOZORENJE,
+            "Artefakti na ekranu bez pregrevanja mogu ukazivati na VRAM kvar, ali nije potvrdjeno drugim simptomima. Pratiti i prijaviti ako se javi zamrzavanje ili nestabilnost sistema."));
+        System.out.println("Nivo 3 (manual): UPOZORENJE - VRAM_KVAR (nepotvrdjeno)");
 end

@@ -44,3 +44,12 @@ Pokretanje pojedinacnih testova:
 .\mvnw.cmd test -Dtest=CepPravilaTest
 .\mvnw.cmd test -Dtest=ScenarioTest
 ```
+
+### 5. Pokretanje frontend-a
+
+```powershell
+cd ..\frontend
+ng serve
+```
+
+Frontend se pokrece na `http://localhost:4200`.

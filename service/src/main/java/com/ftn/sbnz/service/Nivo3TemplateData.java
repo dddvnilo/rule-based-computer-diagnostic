@@ -17,7 +17,7 @@ public class Nivo3TemplateData {
         // CPU
         rows.add(row("PREGREVANJE_CPU",          "KRITICNO",   "CPU se pregreva pod opterecenjem. Proveriti hladjenje i aplikacije koje opterecuju procesor."));
         // GPU
-        rows.add(row("VRAM_KVAR",                "KRITICNO",   "Artefakti bez pregrevanja ukazuju na kvar VRAM memorije. Zameniti graficku karticu."));
+        // VRAM_KVAR ozbiljnost zavisi od pratecih simptoma - vidi nivo3-manual.drl
         // RAM
         rows.add(row("FIZICKI_KVAR_RAM",         "KRITICNO",   "Zameniti RAM modul. Do tada izbegavati upotrebu racunara."));
         rows.add(row("PREOPTERECENJE_RAM",        "INFO",       "Visoka zauzetost RAM memorije. Zatvoriti nepotrebne programe ili razmotriti nadogradnju."));
