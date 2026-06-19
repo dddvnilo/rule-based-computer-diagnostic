@@ -88,16 +88,17 @@ def maticna_normalno():
 
 def cpu_kvar():
     # temperaturaCPU > 90 -> nivo1 (CPU, COOLING) + CEP-1 nakon 3 merenja
+    # cpuUtilizacija > 90 -> nivo2 PREGREVANJE_CPU (mora pouzdano probiti prag)
     return {
         "temperaturaCPU": round(random.uniform(91.0, 98.0), 1),
-        "cpuUtilizacija":  round(random.uniform(80.0, 99.0), 1),
+        "cpuUtilizacija":  round(random.uniform(91.0, 99.0), 1),
     }
 
 def gpu_kvar():
-    # temperaturaGPU > 90 -> nivo1 GPU
+    # temperaturaGPU > 95 -> nivo2 PREGREVANJE_GPU (>100 KRITICNO, <=100 UPOZORENJE)
     # rpmGPUVentilator < 300 -> nivo1 range (GPU, COOLING)
     return {
-        "temperaturaGPU":   round(random.uniform(91.0, 96.0), 1),
+        "temperaturaGPU":   round(random.uniform(96.0, 102.0), 1),
         "rpmGPUVentilator": random.randint(50, 200),
     }
 
@@ -106,9 +107,10 @@ _cpu_fan_rpm = 1400
 
 def hladjenje_kvar():
     # rpmCaseVentilator < 200 -> nivo1 range (COOLING)
-    # rpmCPUVentilator progresivno pada -> CEP-5 nakon 5 uzastopnih merenja
+    # rpmCPUVentilator progresivno pada do potpunog zaustavljanja (< 100 -> VENTILATOR_STAO)
+    # -> CEP-5 nakon 5 uzastopnih merenja
     global _cpu_fan_rpm
-    _cpu_fan_rpm = max(200, _cpu_fan_rpm - random.randint(60, 110))
+    _cpu_fan_rpm = max(0, _cpu_fan_rpm - random.randint(60, 110))
     return {
         "rpmCPUVentilator":    _cpu_fan_rpm,
         "rpmGPUVentilator":    random.randint(50,  200),
@@ -118,22 +120,26 @@ def hladjenje_kvar():
 
 def disk_kvar():
     # smartReallocatedSectors/pendingSectors/uncorrectableErrors > 0 -> nivo1 DISK + CEP-2 nakon 5 merenja
+    # diskPowerOnHours povremeno > 30000 -> nivo2 ISTROSENOST_DISKA (INFO), uz SMART greske (KRITICNO)
     return {
         "smartReallocatedSectors":  random.randint(1, 5),
         "smartPendingSectors":       random.randint(0, 3),
         "smartUncorrectableErrors":  random.randint(0, 2),
-        "diskPowerOnHours":          random.randint(3000, 8000),
+        "diskPowerOnHours":          random.choice([
+            random.randint(3000, 8000),
+            random.randint(31000, 50000),
+        ]),
     }
 
 # Stanje za CEP-4: naizmenicno visok/nizak napon za oscilaciju > 0.6V
 _psu_toggle = False
 
 def psu_kvar():
-    # Alternira 12.1V / 12.9V -> raspon 0.8V > 0.6V -> CEP-4 nakon 5 merenja u 5min
-    # napon12V < 11.4 -> nivo1 PSU (jednom u svakih N ciklusa)
+    # Alternira 12.9V / 11.2V -> raspon 1.7V > 0.6V -> CEP-4 nakon 5 merenja u 5min
+    # 11.2V < 11.4 -> svaki drugi ciklus pouzdano okida i nivo1/nivo2 NESTABILAN_NAPON
     global _psu_toggle
     _psu_toggle = not _psu_toggle
-    napon = 12.9 if _psu_toggle else 12.1
+    napon = 12.9 if _psu_toggle else 11.2
     return {
         "napon12V": round(napon + random.uniform(-0.05, 0.05), 2),
         "napon5V":  round(random.uniform(4.90, 5.10), 2),
@@ -157,8 +163,9 @@ def os_kvar():
 
 def ram_kvar():
     # ramZauzetost > 85 -> nivo1 RAM + nivo2 PREOPTERECENJE_RAM -> INFO
+    # memtestGreske > 0 -> nivo2 FIZICKI_KVAR_RAM -> KRITICNO
     return {
-        "memtestGreske": 0,
+        "memtestGreske": random.randint(1, 5),
         "ramZauzetost":  round(random.uniform(88.0, 98.0), 1),
     }
 

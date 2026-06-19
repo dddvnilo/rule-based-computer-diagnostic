@@ -37,7 +37,7 @@ cd ..\service
 Pokretanje pojedinacnih testova:
 - po nivou pravila
 - cep
-- scenariji (integracioni)
+- scenariji
 
 ```powershell
 .\mvnw.cmd test -Dtest=NivoPravilaTest
